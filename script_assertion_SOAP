@@ -1,0 +1,38 @@
+/*
+************************************************************************************************************************
+************************************** SLA ENDPOINT HEADER ATTACHMENTS RESPONSE NODES  ************************************************
+************************************************************************************************************************
+*/
+
+// check response time
+assert messageExchange.timeTaken < 2000
+
+//check for Endpoint
+def endpoint =  "http://tstv-b2bis-001.wag-test.local:11602/rest/toll/obe-status"
+assert messageExchange.getEndpoint() == endpoint: "Endpoint is not match:"
+//log.info messageExchange.getEndpoint()
+
+//check for header (nema of the header...)
+//log.info (messageExchange.responseHeaders["Content-Lenght"])
+assert messageExchange.responseHeaders != null : "Response Header Is EMPTY"
+
+//check for attachments
+assert messageExchange.responseAttachments.length == 0 : "Response Attachments is not NULL"
+//log.info (messageExchange.responseAttachments.length)
+
+//Validate response nodes SOAPUI
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def reguestHolder = groovyUtils.getXmlHolder(messageExchange.requestContent)
+def responseHolder = groovyUtils.getXmlHolder(messageExchange.responseContent)
+//Response Header providerId is ESB assertion
+def refNum = responseHolder.getNodeValue("//ns18:providerId")
+assert refNum == "ESB"
+//Response Header timestamp is not null assertion
+def refNum2 = responseHolder.getNodeValue("//ns18:timestamp")
+assert refNum2  != null
+def refNum3 = responseHolder.getNodeValue("//ns18:messageId")
+assert refNum3  != null
+def refNum4 = responseHolder.getNodeValue("//ns18:returnCode")
+assert refNum4 == "0"
+def refNum5 = responseHolder.getNodeValue("//ns18:returnMessage")
+assert refNum5 == "OK - request accepted for processing"
