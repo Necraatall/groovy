@@ -20,7 +20,7 @@ assert messageExchange.responseHeaders != null : "Response Header Is EMPTY"
 assert messageExchange.responseAttachments.length == 0 : "Response Attachments is not NULL"
 //log.info (messageExchange.responseAttachments.length)
 
-//Validate response nodes SOAPUI
+//Validate response nodes SOAP
 def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
 def reguestHolder = groovyUtils.getXmlHolder(messageExchange.requestContent)
 def responseHolder = groovyUtils.getXmlHolder(messageExchange.responseContent)
