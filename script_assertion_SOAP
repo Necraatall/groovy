@@ -36,3 +36,9 @@ def refNum4 = responseHolder.getNodeValue("//ns18:returnCode")
 assert refNum4 == "0"
 def refNum5 = responseHolder.getNodeValue("//ns18:returnMessage")
 assert refNum5 == "OK - request accepted for processing"
+
+
+
+
+
+
