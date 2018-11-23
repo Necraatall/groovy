@@ -1,0 +1,36 @@
+/***********************************************************************************************************************************
+*********************************************Validation of response/request*********************************************************
+*****************************for json path using JSONPath Finder chrome extension (xpath/jsonPath)**********************************
+************************************************************************************************************************************/
+
+//Validate response nodes REST
+
+// the library import
+import groovy.json.JsonSlurper
+
+//Validate response nodes REST
+//def requestMessage = message.Exchange.response.responseContent
+def responseMessage = messageExchange.response.responseContent
+def json = new JsonSlurper().parseText(responseMessage)
+
+//assert node values
+// syntax: assert json.JSONPATH.ELEMENT.toString() COMPARE SYMBOLS LIKE IN IF (>,<,>=,<=,==,!=,you may use as comparing value "null")
+def headers =  messageExchange.getResponseHeaders()
+//log.info "Header status" + headers["#status#"]
+assert ['HTTP/1.1 200 OK'] == headers["#status#"] : "Test Case HTTP Erorr: " + headers["#status#"]
+
+assert json.response.responseHeader.toString() != null : "responseHeader is empty: " + json.response.responseHeader   //validation on responseHeader is not empty
+log.info "responseHeader is: " +  json.response.responseHeader
+assert json.response.responseHeader.providerId.toString != null : "responseHeader is empty: " + json.response.responseHeader    //validation on responseHeader is not empty
+log.info "providerId is: " +  json.response.responseHeader.providerId
+assert json.response.responseBody.returnCode.toString() == "1" : "returnCode is not 0: " +  json.response.responseBody.returnCode
+log.info "returnCode is: " +  json.response.responseBody.returnCode
+
+
+
+// some other thing
+/*
+testStepName = messageExchange.modelItem.testStep.name                //to get the Test Step Name
+log.info testStepName
+xmlHold = messageExchange.responseContentAsXml.toString()             //to store the response as Xml
+*/
