@@ -4,9 +4,18 @@
 ************************************************************************************************************************************/
 
 //Validate response nodes REST
-
-// the library import
 import groovy.json.JsonSlurper
+
+def headers =  messageExchange.getResponseHeaders()
+assert ['HTTP/1.1 200 OK'] == headers["#status#"] : "Test Case HTTP Erorr: " + headers["#status#"]
+log.info "Header status" + headers["#status#"]
+
+// Server validation  - IF needet delete /* before code and */  afther code
+/*
+assert ["BIS6.5.2SP35"] == headers["Server"] : "Test Case Server Erorr: " + headers["Server"]
+log.info "Server: " +  headers["Server"]
+*/
+
 
 //Validate response nodes REST
 //def requestMessage = message.Exchange.response.responseContent
@@ -14,19 +23,20 @@ def responseMessage = messageExchange.response.responseContent
 def json = new JsonSlurper().parseText(responseMessage)
 
 //assert node values
-// syntax: assert json.JSONPATH.ELEMENT.toString() COMPARE SYMBOLS LIKE IN IF (>,<,>=,<=,==,!=,you may use as comparing value "null")
-def headers =  messageExchange.getResponseHeaders()
-//log.info "Header status" + headers["#status#"]
-assert ['HTTP/1.1 200 OK'] == headers["#status#"] : "Test Case HTTP Erorr: " + headers["#status#"]
-
 assert json.response.responseHeader.toString() != null : "responseHeader is empty: " + json.response.responseHeader   //validation on responseHeader is not empty
 log.info "responseHeader is: " +  json.response.responseHeader
-assert json.response.responseHeader.providerId.toString != null : "responseHeader is empty: " + json.response.responseHeader    //validation on responseHeader is not empty
+assert json.response.responseHeader.providerId.toString() != null : "providerId is empty: " + json.response.responseHeader.providerId    //validation on responseHeader is not empty
 log.info "providerId is: " +  json.response.responseHeader.providerId
-assert json.response.responseBody.returnCode.toString() == "1" : "returnCode is not 0: " +  json.response.responseBody.returnCode
+assert json.response.responseHeader.messageId.toString() != null : "messageId is empty: " +  json.response.responseHeader.messageId
+log.info "messageId is: " +  json.response.responseHeader.messageId
+assert json.response.responseHeader.timestamp.toString() != null : "timestamp is empty: " +  json.response.responseHeader.timestamp
+log.info "timestamp is: " +  json.response.responseHeader.timestamp
+assert json.response.responseBody.toString() != null : "responseBody is empty: " + json.response.responseBody   //validation on responseBody is not empty
+log.info "responseBody is: " +  json.response.responseBody
+assert json.response.responseBody.returnCode.toString() == "0" : "returnCode is not 0: " +  json.response.responseBody.returnCode
 log.info "returnCode is: " +  json.response.responseBody.returnCode
-
-
+assert json.response.responseBody.returnMessage.toString() == "Message Accepted" : "returnCode is not 'Message Accepted': " +  json.response.responseBody.returnMessage
+log.info "returnMessage is: " +  json.response.responseBody.returnMessage
 
 // some other thing
 /*
