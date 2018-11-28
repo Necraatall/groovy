@@ -1,0 +1,94 @@
+//Run only whole Test soap Case
+
+//Groovy script datasource
+/*
+@Description : Data Source to read .txt file and pass the value to corresponding property.
+@GroovyTestStepName : "Groovy Script - DataSource"
+*/
+
+ // Import libraries
+import com.eviware.soapui.support.XmlHolder
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+// define some variables like counter for lines...
+def counter,next,previous,size, fullPath
+// define path to my soapUITC in soapUI project
+def myTestCase = context.testCase
+// define path to folde where project is saved
+def projectPath = groovyUtils.projectPath;
+// define folder with test data
+def folder = projectPath + "\\testData";
+// define search of all .txt format files in path stored in folder plus folder name and .txt 
+new File(folder).eachFileMatch(~/.*.txt/) { file ->
+         println file.getName();
+         log.info ("File name " + file.getName() );
+         fullPath = folder + "\\" + file.getName()
+         log.info ("Path to read the file " + file.getName() + " " + fullPath)}
+		
+File tickerEnumFile = new File(fullPath); //make sure a file already exists and contains different set of values sepearted by new line (CR).
+List lines = tickerEnumFile.readLines()
+size = lines.size.toInteger()
+propTestStep = myTestCase.getTestStepByName("Property - Looper") // get the Property TestStep
+//Now need to set the property Count in Property - Looper if have null value
+if(testRunner.testCase.getTestStepByName("Property - Looper").getPropertyValue("Count")==null){
+		testRunner.testCase.getTestStepByName("Property - Looper").setPropertyValue("Count", '0')
+	}
+counter = propTestStep.getPropertyValue("Count").toString()
+log.info ("Counter " + counter );
+counter= counter.toInteger()
+next = (counter > size-2? 0: counter+1)
+tempValue = lines[counter]
+propTestStep.setPropertyValue("Value", tempValue)
+propTestStep.setPropertyValue("Count", next.toString())
+next++
+log.info "Reading line : ${(counter+1)} / $lines.size"
+propTestStep.setPropertyValue("Next", next.toString())
+log.info "Value '$tempValue' -- updated in $propTestStep.name"
+if (counter == size-1)
+{
+propTestStep.setPropertyValue("StopLoop", "T")
+log.info "Setting the stoploop property now..."
+}
+else if (counter==0)
+{
+def runner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testRunner.testCase, null)
+propTestStep.setPropertyValue("StopLoop", "F")
+}
+else
+{
+propTestStep.setPropertyValue("StopLoop", "F")
+}
+
+//Property - Looper
+/*
+@ values
+Total
+Value
+Count
+Next
+StopLoop
+*/
+
+//GEC_Symbol_Enumeration SOAP POST
+//in element:
+//${Property- Looper#Value}
+
+//Groovy Script – Data Loop
+/*</pre>
+@Description : Data Source Looper responsible for looping a specific teststep.
+@GroovyTestStepName : "Groovy Script - Data Loop"
+*/
+def myTestCase = context.testCase
+ 
+def runner
+propTestStep = myTestCase.getTestStepByName("Property - Looper") // get the Property TestStep
+endLoop = propTestStep.getPropertyValue("StopLoop").toString()
+ 
+if (endLoop.toString() == "T" || endLoop.toString()=="True" || endLoop.toString()=="true")
+{
+ log.info ("Exit Groovy Data Source Looper")
+ assert true
+}
+else
+{
+ testRunner.gotoStepByName("Groovy Script - DataSource") //setStartStep
+}
