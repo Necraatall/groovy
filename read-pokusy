@@ -1,0 +1,523 @@
+// pokus1 read
+
+// To get the output value, use the built-in result map object
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context)
+def projectPath = groovyUtils.projectPath
+def directoryName = projectPath + "/testData"
+def row = testRunner.testCase.testSteps["Stampa"].currentRow
+def allFiles = []
+new File( directoryName ).eachFile() { file ->
+    if( file.name =~ /.txt/ ) {
+        allFiles.add( file.name )	}
+}
+if ( (row + 1) <= allFiles.size ) {
+    // Output to the test step property called inputData
+    result["inputData"] = new File( directoryName + "/" + allFiles[row] ).text
+}
+
+// pokus2 read
+
+//set up Tc
+ def tc = testRunner.testCase
+ 
+log.info ("Start Program read/Write")
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+def projectPath = groovyUtils.projectPath;
+def folder = projectPath + "\\testData";
+log.info ("Path to read the file " + folder );
+def allFiles = [];
+log.info("Insert File name inside allFiles array ");
+new File (folder).eachFile(){file -> if (file.name =~ /.xml/) {allFiles.add(file.name);}};
+log.info ("Print files"+ allFiles);
+/*	
+	testRunner.testCase.getTestStepByName("Properties").addProperty("Request")
+	testRunner.testCase.getTestStepByName("Properties").setPropertyValue("Request", allFiles)
+*/
+if(testRunner.testCase.getTestStepByName("Properties").getProperty("Request")!=null){
+		testRunner.testCase.getTestStepByName("Properties").setPropertyValue("Request", '')
+	testRunner.testCase.getTestStepByName("Properties").removeProperty("Request")
+	}
+	
+for (filefinded in allFiles) {
+	log.info("start");
+	def file = new File (folder + "/" + filefinded).text;
+	log.info(file);
+	tc.setPropertyValue( 'Response', file )
+	log.info("*******************************************START GET RESPONSE*************************************");
+def previousTestStep = context.testCase.getTestStepAt(context.currentStepIndex - 1)
+String propertySpec = '${' + previousTestStep.name + '#Response}'
+log.info "propertySpec : ${propertySpec}"
+def response = context.expand(propertySpec)
+log.info("context.expand(propertySpec) : ${response}")
+	log.info("*******************************************END GET RESPONSE****************************************");
+	log.info("*******************************************PARSE RESPONSE******************************************");	
+def document = new XmlSlurper().parseText(response)
+	log.info("*********************************GET RESPONSE ALL  ELEMENTS****************************************");
+def allNodes = document.depthFirst().collect{ it }
+	log.info("*******************************************WRITE ALL ELEMENTS TO LOG****************************************");
+allNodes.each { node -> 
+ log.info "node named '${node.name()}' has content :"
+def nameOfProp =node.name();
+
+if(testRunner.testCase.getTestStepByName("Properties").getProperty(nameOfProp)==null){
+log.info "node named: nameOfProp:  " + nameOfProp +" has content ";
+	testRunner.testCase.getTestStepByName("Properties").addProperty(nameOfProp)
+	testRunner.testCase.getTestStepByName("Properties").setPropertyValue(nameOfProp, node.text())
+}
+
+log.info node.text()
+log.info "DONE"
+}
+}
+
+
+//pokus3 r/w txt
+
+//import com.eviware.soapui.support.GroovyUtils
+ 
+log.info ("Start Program read/Write")
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+def projectPath = groovyUtils.projectPath;
+def folder = projectPath + "\\testData";
+log.info ("Path to read the file " + folder );
+def allFiles = [];
+log.info("Insert File name inside allFiles array ");
+new File (folder).eachFile(){file -> if (file.name =~ /.xml/) {allFiles.add(file.name);}};
+log.info ("Print files"+ allFiles);
+
+log.info ("Print files");
+for (filefinded in allFiles) {
+	log.info("start");
+	def file = new File (folder + "/" + filefinded).text;
+	log.info(file);
+	log.info("*******************************************START GET RESPONSE*************************************");
+def previousTestStep = context.testCase.getTestStepAt(context.currentStepIndex - 1)
+String propertySpec = '${' + previousTestStep.name + '#Response}'
+log.info "propertySpec : ${propertySpec}"
+def response = context.expand(propertySpec)
+
+log.info("context.expand(propertySpec) : ${response}")
+	log.info("*******************************************END GET RESPONSE****************************************");
+	log.info("*******************************************PARSE RESPONSE******************************************");	
+def document = new XmlSlurper().parseText(response)
+	log.info("*********************************GET RESPONSE ALL  ELEMENTS****************************************");
+def allNodes = document.depthFirst().collect{ it }
+	log.info("*******************************************WRITE ALL ELEMENTS TO LOG****************************************");
+allNodes.each { node -> 
+ log.info "node named '${node.name()}' has content :"
+ log.info node.text()
+ // Set a test case property
+ testRunner.testCase.testSuite.setPropertyValue( '${node.name()}', node.text() )
+ 
+}
+log.info "DONE"
+
+
+// TO BE DONE REQUEST READ DE ?java? ztraci se mi hodnota promenne resp, nebo ji nebere 
+/*
+	testRunner.getTestCase().getTestStepByName ("Stampa").getProperty("Response").setValue(file);
+	def ts = testRunner.testCase.getTestStepByName("Stampa");
+	log.info('ts :'+ts);
+	def runner = ts.run(testRunner, context);
+	log.info('runner :'+runner);
+	def resp = runner.getResponseContent();
+	log.info('resp :'+resp);
+	def respHeader = runner.getResponseHeaders();
+	log.info('respHeader :'+respHeader);
+	def respHeaderStatu = respHeader["#status#"];
+	log.info('respHeaderStatu :'+respHeaderStatu);
+	log.info(respHeaderStatu);
+	def resptofile = new FileWriter(folder + "/" + "response_:"+filefinded);
+	resptofile.write(respHeaderStatu) ;
+	resptofile.write(resp);
+	resptofile.close();
+*/
+}
+// STOPA
+//https://stackoverflow.com/questions/25400713/groovy-writing-parts-of-response-to-file
+
+
+// pokus 5 
+def stampa = testRunner.testCase.getTestStepByName("Stampa")
+log.info(stampa.getBegin());
+log.info(stampa.getTimestamp());
+log.info(stampa.getEnd());
+
+log.info('************************General Info***********************');
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+log.info("Request : " + context.expand('#(getStampa#Request)'));
+log.info("Response : " + context.expand('#(getStampa#Response)'));
+log.info("Workspace adress : "+groovyUtils.projectPath);
+log.info('***************************************************************');
+saveRequestResponse();
+
+def saveRequestResponse (pathProject)
+{
+	date = new Date();
+	dateFormat = new java.test.SimpleDateFormat("yyyyMMddHHmmss")	
+	postfix = dateFormat.format(dateFormat);
+	def createFolder = new File(pathProject +"\\result\\");
+	createFolder.mkdir();
+	def createFile = new File(createProject +"\\result\\result_" +postfix+" .xml");
+	createFile.write("Request ");
+	createFile.write(context.expand('#(getStampa#Request)'), "UTF-8");
+	createFile.write("Responset ");
+	createFile.write(context.expand('#(getStampa#Responset)'), "UTF-8");
+}
+
+//TO BE DONE, MOZNA BUDE POTREBOVAT PROGRAMOVAT V JAVE V ECLIPSE A POD.
+
+
+//pokus6 delete properties
+
+//set up Tc
+ def tc = testRunner.testCase
+ 
+log.info ("Start Program read/Write")
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+def projectPath = groovyUtils.projectPath;
+def folder = projectPath + "\\testData";
+log.info ("Path to read the file " + folder );
+def allFiles = [];
+log.info("Insert File name inside allFiles array ");
+new File (folder).eachFile(){file -> if (file.name =~ /.xml/) {allFiles.add(file.name);}};
+log.info ("Print files"+ allFiles);
+
+for (filefinded in allFiles) {
+	log.info("start");
+	def file = new File (folder + "/" + filefinded).text;
+	log.info(file);
+	tc.setPropertyValue( 'Response', file )
+	log.info("*******************************************START GET RESPONSE*************************************");
+def previousTestStep = context.testCase.getTestStepAt(context.currentStepIndex - 6)
+String propertySpec = '${' + previousTestStep.name + '#Response}'
+log.info "propertySpec : ${propertySpec}"
+def response = context.expand(propertySpec)
+
+
+log.info("context.expand(propertySpec) : ${response}")
+	log.info("*******************************************END GET RESPONSE****************************************");
+	log.info("*******************************************PARSE RESPONSE******************************************");	
+def document = new XmlSlurper().parseText(response)
+	log.info("*********************************GET RESPONSE ALL  ELEMENTS****************************************");
+def allNodes = document.depthFirst().collect{ it }
+	log.info("*******************************************WRITE ALL ELEMENTS TO LOG****************************************");
+allNodes.each { node -> 
+ log.info "node named '${node.name()}' has content :"
+
+def nameOfProp =node.name();
+log.info "node named: nameOfProp:  " + nameOfProp +" has content ";
+	testRunner.testCase.getTestStepByName("Properties").setPropertyValue(nameOfProp, '')
+	testRunner.testCase.getTestStepByName("Properties").removeProperty(nameOfProp)
+
+log.info node.text()
+log.info "DONE"
+}
+}
+
+
+// trying to read value res
+//def resHolder = groovyUtils.getXmlHolder(messageExchange.responseContent);
+//log.info (resHolder);
+
+
+//pokus4 read excel
+
+import jxl.*
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+def projectPath = groovyUtils.projectPath;
+def folder = projectPath + "\\testData";
+def allFiles = [];
+log.info ("Path to read the file " + folder );
+
+WorkBook wb = WorkBook.getWorkBook(new File("(folder)"+/+"test.xlsx");
+Sheet Sh = wb.getSheet(Input);
+rc = Sh.getRows();
+cc = Sh.getColumns();
+log.info "Row count" + rc;
+log.info "Column count" + cc
+
+for (i=1;i<rc;i++)
+{
+	for(j=0;j<cc;j++)
+		{
+			def value = testRunner.testCase.getTestSteoByName("Properties")	
+			Cell var = sh.getCell(j,i);
+			log.info var.getContents()
+						
+			}
+}
+//TO BE DONE
+
+// pokus5 response/request-on-file
+
+def stampa = new groovy.testCase.TestSuite();
+log.info(stampa.getBegin());
+log.info(stampa.getTimestamp());
+log.info(stampa.getEnd());
+
+log.info('************************General Info***********************');
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+log.info("Request : " + context.expand('#(getStampa#Request)'));
+log.info("Response : " + context.expand('#(getStampa#Response)'));
+log.info("Workspace adress : "+groovyUtils.projectPath);
+log.info('***************************************************************');
+saveRequestResponse();
+
+def saveRequestResponse (pathProject)
+{
+	date = new Date();
+	dateFormat = new java.test.SimpleDateFormat("yyyyMMddHHmmss")	
+	postfix = dateFormat.format(dateFormat);
+	def createFolder = new File(pathProject +"\\result\\");
+	createFolder.mkdir();
+	def createFile = new File(createProject +"\\result\\result_" +postfix+" .xml");
+	createFile.write("Request ");
+	createFile.write(context.expand('#(getStampa#Request)'), "UTF-8");
+	createFile.write("Responset ");
+	createFile.write(context.expand('#(getStampa#Responset)'), "UTF-8");
+}
+
+//TO BE DONE, MOZNA BUDE POTREBOVAT PROGRAMOVAT V JAVE V ECLIPSE A POD.
+
+
+
+//FUNKCNI - jako Setup Script na TC
+//set up Tc
+ def tc = testRunner.testCase
+ 
+log.info ("Start Program read/Write")
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+def projectPath = groovyUtils.projectPath;
+def folder = projectPath + "\\testData";
+def allFiles = [];
+log.info("Insert File name inside allFiles array ");
+new File (folder).eachFile(){file -> if (file.name =~ /.xml/) {allFiles.add(file.name);}};
+for (filefinded in allFiles) {
+	def file = new File (folder + "/" + filefinded).text;
+	log.info(file);
+	tc.setPropertyValue( 'Request', file)
+String propertySpec = file
+log.info "propertySpec : ${propertySpec} is on TC properties"
+def document = new XmlSlurper().parseText(file)	
+def allNodes = document.depthFirst().collect{ it }
+allNodes.each { node -> 
+ log.info "node named '${node.name()}' has content :"
+def nameOfProp =node.name();
+if(tc.getProperty(nameOfProp)!=null){
+	tc.setPropertyValue(nameOfProp, "")
+	tc.removeProperty(nameOfProp)
+	}
+if(tc.getProperty(nameOfProp)==null){
+	tc.addProperty(nameOfProp)
+	tc.setPropertyValue(nameOfProp, node.text())
+	}
+
+log.info node.text()
+log.info "DONE"
+}
+}
+
+/*
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context)
+def projectPath = groovyUtils.projectPath //gets the path of the project root
+def folder = projectPath + "\\testData";
+log.info ("Path to read the file " + folder );
+def allFiles = [];
+log.info("Insert File name inside allFiles array ");
+new File (folder).eachFile(){file -> if (file.name =~ /.csv/) {allFiles.add(file.name);}};
+log.info ("Print files"+ allFiles);
+
+if(testRunner.testCase.testSuite.getProperty("Request")!=null){
+	testCase.testSuite.setProperty("Request","")
+	testCase.testSuite.removeProperty("Request")
+	}
+
+for (filefinded in allFiles) {
+	log.info("start");
+	def file = new File (folder + "/" + filefinded).text;
+	log.info(file);
+def request = context.expand(propertySpec)	
+
+}
+
+//We dont want to have stabile data, cause of it, we will read data from .csv, no matter his name
+def curTC = testCase
+
+ //Read in the firsth line of the data file
+firstLine = context.fileReader.readLine()
+
+ //The firsth line is the titles. We want to use this to name the properties we are going to set up.
+ //Set the firsth line as a property itself so we can use this in ReadNextLine Groovy Script
+curTC.setPropertyValue("titleList", firstline)
+
+//Split the first line and split it into a string array. 
+String[] titleFields = firstLine.split(",")
+
+//Read in the next line and split it into a string array
+firstLine = context.filereader.readLine()
+String[] propData = firstLine.split(",")
+
+def titleCount = titleFields.size()	// count how many titles there are
+for (z=0; z<=titleCount-1; z++)		// for each title add to the properties the title and the value
+{
+	curTC.setPropertyValue(titleFields[z], propData[z])
+	log.info "count " + z +" " +  titleFields[z] + " " +  propData[z]
+}
+*/
+
+
+//FUNGUJE setupuje properties zpet na prazdnou hodnotu
+//set up Tc
+ def tc = testRunner.testCase
+ 
+log.info ("Start Program read/Write")
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+def projectPath = groovyUtils.projectPath;
+def folder = projectPath + "\\testData";
+log.info ("Path to read the file " + folder );
+def allFiles = [];
+log.info("Insert File name inside allFiles array ");
+new File (folder).eachFile(){file -> if (file.name =~ /.xml/) {allFiles.add(file.name);}};
+log.info ("Print files"+ allFiles);
+
+for (filefinded in allFiles) {
+	log.info("start");
+	def file = new File (folder + "/" + filefinded).text;
+	log.info(file);
+	tc.setPropertyValue( 'Response', file )
+	log.info("*******************************************START GET RESPONSE*************************************");
+def previousTestStep = context.testCase.getTestStepAt(context.currentStepIndex -1 )
+String propertySpec = '${' + previousTestStep.name + '#Response}'
+log.info "propertySpec : ${propertySpec}"
+def response = context.expand(propertySpec)
+
+
+log.info("context.expand(propertySpec) : ${response}")
+	log.info("*******************************************END GET RESPONSE****************************************");
+	log.info("*******************************************PARSE RESPONSE******************************************");	
+def document = new XmlSlurper().parseText(response)
+	log.info("*********************************GET RESPONSE ALL  ELEMENTS****************************************");
+def allNodes = document.depthFirst().collect{ it }
+	log.info("*******************************************WRITE ALL ELEMENTS TO LOG****************************************");
+allNodes.each { node -> 
+ log.info "node named '${node.name()}' has content :"
+
+def nameOfProp =node.name();
+log.info "node named: nameOfProp:  " + nameOfProp +" has content ";
+
+	tc.setPropertyValue(nameOfProp, '')
+//	tc.removeProperty(nameOfProp)   //rekl bych ze nefunguje nejde asi mazat na urovni TC
+
+log.info node.text()
+log.info "DONE"
+}
+}
+
+//POKUS XXX chyby
+/*
+@Description : Data Source to read .txt file and pass the value to corresponding property.
+@GroovyTestStepName : "Groovy Script - DataSource"
+*/
+ 
+import com.eviware.soapui.support.XmlHolder
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+def myTestCase = context.testCase
+def counter,next,previous,size
+def projectPath = groovyUtils.projectPath;
+def folder = projectPath + "\\testData";
+log.info ("Path to read the file " + folder );
+def allFiles = [];
+log.info("Insert File name inside allFiles array ");
+File tickerEnumFile = new File (folder).eachFile(){file -> if (file.name =~ /.xml/) {allFiles.add(file.name);}}; //make sure input.txt file already exists and contains different set of values sepearted by new line (CR).
+log.info ("Print files"+ allFiles);
+List lines = tickerEnumFile.readLines()
+size = lines.size.toInteger()
+propTestStep = myTestCase.getTestStepByName("Property - Looper") // get the Property TestStep
+propTestStep.setPropertyValue("Total", size.toString())
+counter = propTestStep.getPropertyValue("Count").toString()
+counter= counter.toInteger()
+next = (counter > size-2? 0: counter+1)
+tempValue = lines[counter]
+propTestStep.setPropertyValue("Value", tempValue)
+propTestStep.setPropertyValue("Count", next.toString())
+next++
+log.info "Reading line : ${(counter+1)} / $lines.size"
+propTestStep.setPropertyValue("Next", next.toString())
+log.info "Value '$tempValue' -- updated in $propTestStep.name"
+if (counter == size-1)
+{
+propTestStep.setPropertyValue("StopLoop", "T")
+log.info "Setting the stoploop property now..."
+}
+else if (counter==0)
+{
+def runner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testRunner.testCase, null)
+propTestStep.setPropertyValue("StopLoop", "F")
+}
+else
+{
+propTestStep.setPropertyValue("StopLoop", "F")
+}
+
+
+//funguje 
+/*
+@Description : Data Source to read .txt file and pass the value to corresponding property.
+@GroovyTestStepName : "Groovy Script - DataSource"
+*/
+
+ // Import libraries
+import com.eviware.soapui.support.XmlHolder
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context);
+// define some variables like counter for lines...
+def counter,next,previous,size, fullPath
+// define path to my soapUITC in soapUI project
+def myTestCase = context.testCase
+// define path to folde where project is saved
+def projectPath = groovyUtils.projectPath;
+// define folder with test data
+def folder = projectPath + "\\testData";
+// define search of all .txt format files in path stored in folder plus folder name and .txt 
+new File(folder).eachFileMatch(~/.*.txt/) { file ->
+         println file.getName();
+         log.info ("File name " + file.getName() );
+         fullPath = folder + "\\" + file.getName()
+         log.info ("Path to read the file " + file.getName() + " " + fullPath)}
+		
+File tickerEnumFile = new File(fullPath); //make sure a file already exists and contains different set of values sepearted by new line (CR).
+List lines = tickerEnumFile.readLines()
+size = lines.size.toInteger()
+propTestStep = myTestCase.getTestStepByName("Property - Looper") // get the Property TestStep
+//Now need to set the property Count in Property - Looper if have null value
+if(testRunner.testCase.getTestStepByName("Property - Looper").getPropertyValue("Count")==null){
+		testRunner.testCase.getTestStepByName("Property - Looper").setPropertyValue("Count", '0')
+	}
+counter = propTestStep.getPropertyValue("Count").toString()
+log.info ("Counter " + counter );
+counter= counter.toInteger()
+next = (counter > size-2? 0: counter+1)
+tempValue = lines[counter]
+propTestStep.setPropertyValue("Value", tempValue)
+propTestStep.setPropertyValue("Count", next.toString())
+next++
+log.info "Reading line : ${(counter+1)} / $lines.size"
+propTestStep.setPropertyValue("Next", next.toString())
+log.info "Value '$tempValue' -- updated in $propTestStep.name"
+if (counter == size-1)
+{
+propTestStep.setPropertyValue("StopLoop", "T")
+log.info "Setting the stoploop property now..."
+}
+else if (counter==0)
+{
+def runner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testRunner.testCase, null)
+propTestStep.setPropertyValue("StopLoop", "F")
+}
+else
+{
+propTestStep.setPropertyValue("StopLoop", "F")
+}
+
+//
+
