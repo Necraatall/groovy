@@ -1,0 +1,22 @@
+// assert that 'storeId', 'registerNumber' is same in request and response
+
+
+assert context.rawRequest, 'Request is empty or null'
+
+assert context.response, 'Response is empty or null'
+
+//Closure to get the required data from json
+def getDataMap = { data, list ->
+  def json = new groovy.json.JsonSlurper().parseText(data)
+  json.inject([:]) {m, key, value -> if(key in list) m[key] = value;m }
+}
+
+def desiredKeys = ['storeId', 'registerNumber']
+
+def reqestMap = getDataMap(context.rawRequest, desiredKeys)
+def responseMap = getDataMap(context.response, desiredKeys)
+
+println "Request data : $reqestMap"
+println "Response data : $responseMap"
+
+assert reqestMap == responseMap, 'Response data is not matching with request data'
