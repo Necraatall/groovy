@@ -1,0 +1,5 @@
+najit bi/ext v adresari soapui
+zkopnout tam jar pro windows - napr mssql...
+u mssql je pak connection string:
+com.microsoft.sqlserver.jdbc.SQLServerDriver
+jdbc:sqlserver://10.44.40.40:1433;databaseName=TPcore;user=milan.zlamal;password=Test123789
