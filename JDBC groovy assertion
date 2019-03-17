@@ -1,0 +1,83 @@
+/*
+*			now is only for timestamp
+*/
+
+// assert createdby in mtd.Customer is SYSTEM or null
+
+def responseAsXmlCustomerCreatedBy = context.expand( '${JDBC Request MasterData mtd.Customer#ResponseAsXml#//Results[1]/ResultSet[1]/Row[1]/CHANGEDBY[1]}' )
+if (responseAsXmlCustomerCreatedBy == "SYSTEM"){
+log.info "<INFO> responseAsXmlCustomerCreatedBy mtd.Customer IS SYSTEM. Actual value in database is: " + responseAsXmlCustomerCreatedBy
+	}
+	else if (responseAsXmlCustomerCreatedBy == null)
+	{
+		log.info "<INFO> responseAsXmlCustomerCreatedBy IS NULL. Actual value in database is: " + responseAsXmlCustomerCreatedBy
+	}
+	else {
+		log.error "<INFO> responseAsXmlCustomerCreatedBy IS NOT NULL AND NOT SYSTEM. Actual value is: " + responseAsXmlCustomerCreatedBy
+	}	
+
+
+/* memo
+log.info ("Some Info!");
+log.warn ("Some Warning!!");
+log.error ("Some Error!!!");
+*/
+// @ created by Milan Zlamal milan.zlamal.qa@gmail.com, all rights to WAG...
+
+
+/*
+*			now is only for timestamp
+*/
+
+// assert changedat in mtd.Customer is greater than masterData timestamp
+
+def responseAsXmlTimestamp = context.expand( '${Properties-properties for assertion scripts#timestamp}' )
+def masterDataResponseTimestamp = context.expand( '${JDBC Request MasterData mtd.Customer#ResponseAsXml#//Results[1]/ResultSet[1]/Row[1]/CHANGEDAT[1]}' )
+
+if (responseAsXmlTimestamp >masterDataResponseTimestamp){
+log.info "<INFO> responseAsXmlTimestamp mtd.Customer timestamp  HAVE GREATER VALUE THAN masterDataResponseTimestamp. Actual value in database is: " + responseAsXmlTimestamp + " Actual value of masterDataResponseTimestamp is: " + masterDataResponseTimestamp  // assertion of:  timestamp in mtd.Customer is greater than masterData timestamp
+	}
+	else if (masterDataResponseTimestamp == null)
+	{
+log.info "<INFO> masterDataResponseTimestamp IS NULL" + masterDataResponseTimestamp
+		}
+	else {
+		log.error "<INFO> masterDataResponseTimestamp IS NOT NULL AND NOT SMALLER THAN mtd.Customer Changedat" + masterDataResponseTimestamp
+		}	
+
+
+/* memo
+log.info ("Some Info!");
+log.warn ("Some Warning!!");
+log.error ("Some Error!!!");
+*/
+// @ created by Milan Zlamal milan.zlamal.qa@gmail.com, all rights to WAG...
+
+
+
+/*
+*			now is only for timestamp
+*/
+
+// assert changedby in mtd.Customer is SYSTEM or null
+
+def responseAsXmlCustomerChangedBy = context.expand( '${JDBC Request MasterData mtd.Customer#ResponseAsXml#//Results[1]/ResultSet[1]/Row[1]/CHANGEDBY[1]}' )
+if (responseAsXmlCustomerChangedBy == "SYSTEM"){
+log.info "<INFO> responseAsXmlCustomerChangedBy mtd.Customer IS SYSTEM. Actual value in database is: " + responseAsXmlCustomerChangedBy
+	}
+	else if (responseAsXmlCustomerChangedBy == null)
+	{
+log.info "<INFO> responseAsXmlCustomerChangedBy IS NULL. Actual value in database is: " + responseAsXmlCustomerChangedBy
+		}
+	else {
+		log.error "<INFO> responseAsXmlCustomerChangedBy IS NOT NULL AND NOT SYSTEM. Actual value is: " + responseAsXmlCustomerChangedBy
+		}	
+
+
+/* memo
+log.info ("Some Info!");
+log.warn ("Some Warning!!");
+log.error ("Some Error!!!");
+*/
+// @ created by Milan Zlamal milan.zlamal.qa@gmail.com, all rights to WAG...
+
