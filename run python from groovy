@@ -1,0 +1,4 @@
+def cmdArray2 = ["python", "/Users/test/temp/hello.py"]
+def cmd2 = cmdArray2.execute()
+cmd2.waitForOrKill(1000)
+log.info cmd2.text
