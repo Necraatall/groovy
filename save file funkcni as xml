@@ -1,0 +1,23 @@
+/*
+*       TOTO slouzi k ukladani filu do xml
+/*
+
+// generator pro zjednoduseni nazvu filu
+def generator = { String alphabet, int n ->
+  new Random().with {
+    (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
+  }
+}
+
+def name = generator( (('A'..'F')+('0'..'9')).join(), 35 ) 
+
+// kontrola kam to bude padat - kde se ulozi fily (zmenit typ a je to txt)
+log.info "C:\\Users\\milan.zlamal\\Desktop\\EETS\\SOAP\\Generator Masterdat\\" + name + ".xml"
+
+def ResFile ="C:\\Users\\milan.zlamal\\Desktop\\EETS\\SOAP\\Generator Masterdat\\" + name + ".xml"
+// urcuje se kterym stepem pred timto chceme pracovat
+def previousTestStep = context.testCase.getTestStepAt(context.currentStepIndex - 1)
+// pokud chcete i previous response tak '${' + previousTestStep.name + '#Request}' zmenit za ResponseAsXml
+def Res = context.expand( '${' + previousTestStep.name + '#Request}' )
+def j = new File(ResFile)
+j.write(Res, "UTF-8")
