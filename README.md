@@ -1,2 +1,2 @@
 # groovy
-my groovy scripts
+my groovy scripts and some vificundations
