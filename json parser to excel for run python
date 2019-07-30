@@ -1,0 +1,25 @@
+* must be on hard disc
+
+import json 
+import pandas as pd 
+
+data = []
+with open('D:/EuroWag/Petr/446BE2679D87BB2E10DA7150A9E542B93A4.xml') as json_file:
+    data = json.load(json_file)       
+
+# tiskni pro kontrolu
+print (data["request"]["requestHeader"]["consumerId"])  
+print (data["request"]["requestHeader"]["correlationId"])  
+
+consumerId=data["request"]["requestHeader"]["consumerId"]
+correlationId=data["request"]["requestHeader"]["correlationId"]
+
+#udelej jako dataframe
+data_df= pd.DataFrame(
+    {
+     'consumerId': [consumerId],   
+     'correlationId': [correlationId]    
+    })
+
+#   ulož jako excel 
+data_df.to_excel('D:/EuroWag/Petr/viapass.xls')
