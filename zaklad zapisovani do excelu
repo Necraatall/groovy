@@ -1,0 +1,49 @@
+import jxl.*
+import jxl.write.*
+
+/*
+https://community.smartbear.com/t5/SoapUI-Open-Source/How-to-save-response-data-in-Excel-CSV-format-in-SOAP-UI-5-2-1/m-p/115816
+You need to use an Excel API to communicate or manipulate data in the Excel files.
+Download Java Excel API and place the JXL.jar file in the “lib” folder of your SoupUI installation directory. 
+ */
+
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def holder = groovyUtils.getXmlHolder("Masterdata1-ODS-ESB-activation#ResponseAsXml") // Change RequestStep name
+
+log.info holder.getXml()  // will display /Log the response in Xml
+
+// generator pro zjednoduseni nazvu
+def generator = { String alphabet, int n ->
+  new Random().with {
+    (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
+  }
+}
+// tady lze nastavit intervaly na generovani z nich a pocet vygenerovanych znaku
+def name = generator( (('A'..'F')+('0'..'9')).join(), 35 ) 
+
+// kontrola kam to bude padat - kde se ulozi fily (zmenit typ a je to txt)
+log.info "C:\\Users\\milan.zlamal\\Desktop\\EETS\\SOAP\\Generator Masterdat\\" + name + ".xml"
+
+def ResFile ="C:\\Users\\milan.zlamal\\Desktop\\EETS\\SOAP\\Generator Masterdat\\" + name + ".xml"
+// urcuje se kterym stepem pred timto chceme pracovat
+def previousTestStep = context.testCase.getTestStepAt(context.currentStepIndex - 1)
+
+// tady uz to chce excel knihovnu v lib viz vyse a doplnit nazvy worksheetu xpathu a pod
+WritableWorkbook workbook = Workbook.createWorkbook(new File('${ResFile}'))
+WritableSheet sheet = workbook.createSheet("Worksheet 1", 0)
+
+log.info(sheet.isHidden())
+
+xPath1 = "//*:id/text()"     // use xPath to access the value from response
+xPath2 = "//*:content/text()"
+
+log.info holder.getNodeValue(xPath1)
+log.info holder.getNodeValue(xPath2)
+
+Label label = new Label(0, 1, holder.getNodeValue(xPath1)); //column=0,row=1
+sheet.addCell(label);
+Label label1 = new Label(2, 2, holder.getNodeValue(xPath2)); //column=2,row=2
+sheet.addCell(label1); 
+
+workbook.write();
+workbook.close();
