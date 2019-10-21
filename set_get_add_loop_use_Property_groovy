@@ -72,3 +72,20 @@ testRunner.testCase.setTestStepByName("CountryCodes").removePropertyValue("Name2
 com.eviware.soapui.SoapUI.globalProperties.setPropertyValue("Name", "Global Property works")
 log.info ("Project Property = "+globalProperty)
 
+****************************************************************************************************************
+****************************************************************************************************************
+**********************USING PROPERTIES**************************************************************************
+****************************************************************************************************************
+****************************************************************************************************************
+***in request
+${Project#CountryName}
+${TestSuite#CountryName}
+${TestCase#CountryName}
+//property test step
+${property#CountryName}
+${Global#CountryName}
+***in groovy script
+def name = context.expand('${Project#Name}')  //zde zase dodam string co davam do ***in request
+def name = context.expand('${System#user.home}') //vyjde mi adresa usera na kompu C:\User\NAME_OF_AD_ACCOUNT
+def name = context.expand('${Env#MAVEN_HOME}') //vyjde mi adresa mavenu na kompu C:\Program Files\apache-maven-3.5.2
+
