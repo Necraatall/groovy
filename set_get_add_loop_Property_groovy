@@ -1,0 +1,74 @@
+**********************loop / get / set / add / remove property************************
+***loop all properties
+testRunner.testCase.properties.each
+{
+   key, value ->
+   log.info (testRunner.testCase.get.getPropertyValue(key))   //cestu najdeme nize dle typu property
+   log.info (key+" - "+value)
+}
+
+***GET
+//Project
+def projectProp = testRunner.testCase.testSuite.project.getPropertyValue("Name")
+log.info ("Project Property = "+projectProp)
+//TestSuite
+def testSuiteProp = testRunner.testCase.testSuite.getPropertyValue("Name")
+log.info ("Project Property = "+testSuiteProp)
+//TestCase
+def testCaseProp = testRunner.testCase.getPropertyValue("Name")
+log.info ("Project Property = "+testCaseProp)
+//TestStep
+def projectProp = testRunner.testCase.getTestStepByName("CountryCodes").getPropertyValue("Name")
+log.info ("Project Property = "+projectProp)
+//Global
+def globalProperty = com.eviware.soapui.SoapUI.globalProperties.getPropertyValue("Name")
+log.info ("Project Property = "+globalProperty)
+***SET - with changing values************************************
+//Project
+testRunner.testCase.testSuite.project.setPropertyValue("Name", "Project Property works")
+log.info ("Project Property = "+projectProp OR testRunner.testCase.testSuite.project.getPropertyValue("Name"))
+//TestSuite
+testRunner.testCase.testSuite.setPropertyValue("Name", "TestSuite Property works")
+log.info ("Project Property = "+testSuiteProp)
+//TestCase
+testRunner.testCase.setPropertyValue("Name", "TestCase Property works")
+log.info ("Project Property = "+testCaseProp)
+//TestStep
+testRunner.testCase.setTestStepByName("CountryCodes").getPropertyValue("Name", "TestStep Property works")
+log.info ("Project Property = "+projectProp)
+//Global
+com.eviware.soapui.SoapUI.globalProperties.setPropertyValue("Name", "Global Property works")
+log.info ("Project Property = "+globalProperty)
+***set + add + remove***********************************************************
+//Project
+testRunner.testCase.testSuite.project.setPropertyValue("Name", "Project Property works")
+log.info ("Project Property = "+projectProp OR testRunner.testCase.testSuite.project.getPropertyValue("Name"))
+
+testRunner.testCase.testSuite.project.setPropertyValue("Name2", "Project Property works")
+testRunner.testCase.testSuite.project.removePropertyValue("Name2", "Project Property works")
+
+//TestSuite
+testRunner.testCase.testSuite.setPropertyValue("Name", "TestSuite Property works")
+log.info ("Project Property = "+testSuiteProp)
+
+testRunner.testCase.testSuite.setPropertyValue("Name2", "Project Property works")
+testRunner.testCase.testSuite.removePropertyValue("Name2", "Project Property works")
+
+//TestCase
+testRunner.testCase.setPropertyValue("Name", "TestCase Property works")
+log.info ("Project Property = "+testCaseProp)
+
+testRunner.testCase.setPropertyValue("Name2", "Project Property works")
+testRunner.testCase.removePropertyValue("Name2", "Project Property works")
+
+//TestStep
+testRunner.testCase.setTestStepByName("CountryCodes").getPropertyValue("Name", "TestStep Property works")
+log.info ("Project Property = "+projectProp)
+
+testRunner.testCase.setTestStepByName("CountryCodes").addPropertyValue("Name2", "TestStep Property works")
+testRunner.testCase.setTestStepByName("CountryCodes").removePropertyValue("Name2", "TestStep Property works")
+
+//Global
+com.eviware.soapui.SoapUI.globalProperties.setPropertyValue("Name", "Global Property works")
+log.info ("Project Property = "+globalProperty)
+
