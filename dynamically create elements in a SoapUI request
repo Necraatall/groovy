@@ -1,0 +1,107 @@
+**********************************************************************************
+*****************dynamically create elements in a SoapUI request******************
+/*
+* I got this problem – took me like 8 hours to solve, so that qualifies it as a problem. 
+* In SoapUI I have a call that responds with something like <night ratePlanID="A" stayDate="B" 
+* availCodeID="C" regularPrice="D" totalPrice="E" />. 
+* There are multiple of these, the number can change depending on the inputs to this call. 
+* I need to create the same number of elements for my next call, 
+* and change the attributes around a bit to make it look something like: 
+* <hot:night ratePlanID="A" resDate="B" quotedPrice="E" />. 
+* Luckily Groovy abstracts away the need for counting things, 
+* and I naively thought that manipulating the XML would be a breeze too…
+*/
+
+version 1.0
+The first useful hints that I got were from the SoapUI tips & tricks. After that getting at the individual attributes is done with attributes.getNamedItem(). After that I just brute-forced my way through it.
+
+// create groovyUtils and XmlHolder for response of my "find room" call
+def grUtils = new com.eviware.soapui.support.GroovyUtils(context)
+def holder = grUtils.getXmlHolder("find room#Response")
+
+// place for my final result
+def entireXmlFragment = new StringBuilder()
+
+// get only the nodes that I am interested in, and iterate over all of them
+holder.getDomNodes("//*:hotel/*:roomType/*:guestCount[1]/*:night").each {
+
+	// create a new node one piece of string at a time
+	def oneXmlFragment = new StringBuilder()
+	oneXmlFragment << "<hot:night ratePlanID='"
+	oneXmlFragment << it.attributes.getNamedItem("ratePlanID").getNodeValue()
+	oneXmlFragment << "' resDate='"
+	oneXmlFragment << it.attributes.getNamedItem("stayDate").getNodeValue()
+	oneXmlFragment << "' quotedPrice='"
+	oneXmlFragment << it.attributes.getNamedItem("totalPrice").getNodeValue()
+	oneXmlFragment << "' />"
+	oneXmlFragment << System.getProperty("line.separator")
+
+	// add the new node to my final result
+	entireXmlFragment << oneXmlFragment
+}
+
+// push the final result into a property
+testRunner.testCase.setPropertyValue("entireXmlFragment", entireXmlFragment.toString())
+Now in my next call I just insert ${#TestCase#entireXmlFragment} where I want this XML fragment to be placed. Works, but seems kinda neanderthal.
+**************************************************************************************************
+*********************************version 2.0******************************************************
+**************************************************************************************************
+version 2.0
+There has to be a way to manipulate my XmlFragments as XML objects, and there has to be a way to push them directly into the next call? The grUtils.getXmlHolder() led me to holder.getDomNodes(), which gives you back a org.w3c.dom.Node.
+
+// create groovyUtils and XmlHolder for response of my "find room" call
+def grUtils = new com.eviware.soapui.support.GroovyUtils(context)
+def responseHolder = grUtils.getXmlHolder("find room#Response")
+
+// create XmlHolder for request of my "bookHotelRes" call
+def requestHolder = grUtils.getXmlHolder("bookHotelRes#Request")
+// find the Node that I am interested in
+def requestNode = requestHolder.getDomNode("//*:bookHotelResInput/*:room")
+// the Document object is used to create new nodes
+def requestDoc = requestNode.getOwnerDocument()
+
+// get only the nodes that I am interested in, and iterate over all of them
+responseHolder.getDomNodes("//*:hotel/*:roomType/*:guestCount[1]/*:night").each {
+
+	// create a new Element in the Document
+	def oneElement = requestDoc.createElementNS(requestNode.getNamespaceURI(), "night")
+	// define all the attributes
+	oneElement.setAttribute("ratePlanID", it.attributes.getNamedItem("ratePlanID").getNodeValue())
+	oneElement.setAttribute("resDate", it.attributes.getNamedItem("stayDate").getNodeValue())
+	oneElement.setAttribute("quotedPrice", it.attributes.getNamedItem("totalPrice").getNodeValue())
+	// insert the Element
+	requestNode.insertBefore(oneElement, requestNode.getFirstChild())
+}
+
+// write the Document out to the request
+requestHolder.updateProperty(true)
+The above will write out the next Element as the first child. Also, and perhaps more importantly, the above will write it out into your request – if you run your test twice in a row, you will end up with both results (old and new) in your request. This is undesirable, but easy to take care of.
+
+// cleanup from a "previous" run
+requestHolder.getDomNodes("//*:bookHotelResInput/*:room/*:night").each {
+	requestNode.removeChild(it)
+}
+
+**************************************************************************************************
+**************************version 3***************************************************************
+**************************************************************************************************
+
+//Pretty much the same thing as you have written
+
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context)
+def holder = groovyUtils.getXmlHolder(“matchRanking – Request 1#Request”)
+def node = holder.getDomNodes(“//ran:matchRanking”)
+
+def nodeCount = node.length
+log.info “nodeCount = ” + nodeCount
+
+def requestDoc = node.getOwnerDocument()
+def oneElement = requestDoc.createElementNS(node.getNamespaceURI(), “candidatePropsList”)
+
+def childNode = holder.getDomNodes(“//candidatePropsList”)
+def childNodeCount = childNode.length
+log.info “childNodeCount = ” + childNodeCount
+
+https://siking.wordpress.com/2012/01/06/dynamically-create-elements-in-a-soapui-request/
+
+
