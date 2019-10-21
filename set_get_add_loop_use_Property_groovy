@@ -88,4 +88,60 @@ ${Global#CountryName}
 def name = context.expand('${Project#Name}')  //zde zase dodam string co davam do ***in request
 def name = context.expand('${System#user.home}') //vyjde mi adresa usera na kompu C:\User\NAME_OF_AD_ACCOUNT
 def name = context.expand('${Env#MAVEN_HOME}') //vyjde mi adresa mavenu na kompu C:\Program Files\apache-maven-3.5.2
+****************************************************************************************************************
+****************************************************************************************************************
+**********************PROPERTY TRANSFER REST********************************************************************
+****************************************************************************************************************
+****************************************************************************************************************
+***TRANSFER ACCOUNT NUMBER
+//Source: Request1 --Property as Response1
+//Target: Request2--property as Request2
+
+//Response1
+{
+   "transactionDetails":    {
+      "startRow": "1",
+      "endRow": "400",
+      "totalRow": "1",
+      "timeZone": "EST"
+   },
+   "invoiceNodeDetails":    {
+      "nodeLabel": "mx",
+      "hierarchyPointId": "16760",
+      "nodeStartDate": "20170419 01:40:35",
+      "sequenceNumber": "982475",
+      "updateDate": "20170419 01:40:35",
+      "nodeCreateDate": "20170420 07:47:13",
+      "account1Number": "8290000000682"
+   },
+   "orderDetails": {"serviceOrderNumber": "MX-EUAM-31734"}
+}
+//Request2
+{
+      "customerDefinedGroupNodeDetails": {
+         "parentInvoiceHierarchyPointId": "155346355",
+         "startDate": "20170419 01:40:35",
+         "customerDefinedGroupId": "000011",
+         "customerAdminId": "",
+         "label": "&cadmxprs&",
+         "legacyIdTypeCode": "G"
+      },
+      "userDetails": {
+         "userId": "DK246Q",
+         "accountNumber": "8290000000682",
+         "accountToNumber": "",
+         "customerName": "WalGreen",
+         "activity": "&Description provided by UI&"
+      }
+   }
+
+***SOLUTION1 in groovy assertion in 1th req
+assert context.response, 'Response is empty or null'
+def json = new groovy.json.JsonSlurper().parseText(context.response)   
+context.testCase.setPropertyValue('ACCOUNT_NO', json.invoiceNodeDetails.account1Number.toString()) //json.NAME_OF_LIST.NAME_OF_ELEMENT.toString()
+
+//In the second request use Property Transfer ${#TestCase#ACCOUNT_NO}
+
+***SOLUTION2 in groovy assertion in 1th req
+
 
