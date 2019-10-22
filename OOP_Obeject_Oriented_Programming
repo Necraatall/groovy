@@ -1,0 +1,19 @@
+********tutorial 8
+*****https://www.youtube.com/watch?v=GQKPClA1kBE
+
+//je nutno hodnoty ukladat do property
+//kazdy script musi koncit radkem jako je tento: 
+context.setProperty("Hello", new Hello(promenna1, promenna2, promenna3))
+
+// zavolani jineho test stepu
+testRunner.testCase.getTestStepByName("Hello")
+// ulozeni do promenne
+def testStep = testRunner.testCase.getTestStepByName("Hello")
+
+// spustit 
+testStep.run(testRunner, context)
+
+********tutorial 9
+*****https://www.youtube.com/watch?v=3PlXWtTswug
+
+
