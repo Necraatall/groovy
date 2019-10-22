@@ -1,1 +1,6 @@
+*******************comercni verze:*************************
 log.info testRunner.metaClass.methods*.name.unique().sort()
+vyhodi vsechny mozne methody
+*******************Nekomercni verze************************
+https://www.soapui.org/apidocs/com/eviware/soapui/model/testsuite/TestRunner.html
+
