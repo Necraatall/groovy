@@ -142,6 +142,6 @@ context.testCase.setPropertyValue('ACCOUNT_NO', json.invoiceNodeDetails.account1
 
 //In the second request use Property Transfer ${#TestCase#ACCOUNT_NO}
 
-***SOLUTION2 in groovy assertion in 1th req
-
-
+**************************conditional get**********************************
+//prakticky pokud je hodnota firsth, pak bude prvni, pokud ne, tak druha
+${= testCase.getPropertyValue( "selection" ) == "first" ? testCase.getPropertyValue( "FirstXML" ) : testCase.getPropertyValue( "SecondXML" )}
