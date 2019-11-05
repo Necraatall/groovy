@@ -1,0 +1,105 @@
+https://community.smartbear.com/t5/SoapUI-Pro/how-to-find-teststep-disabled-or-enabled/m-p/166149#M37418
+
+disable/enable test step
+testRunner.testCase.getTestStepByName( "run TestCase MasterData_preparing-NOT_full_Activation_disabled" ).disabled = true;
+
+
+how to find teststep disabled or enabled 
+This is a Groovy Script that I have set as the TestRunListener.beforeRun event script. I use it to check a lot of common mistakes I make, but you can see how it's based around looping through each of the test steps and initially checking if it is disabled or not.
+
+ 
+
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.basic.*
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.http.*
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.jdbc.*
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.jms.*
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.soap.*
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.GroupAssertion
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.MessageContentAssertion
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.ProXPathContainsAssertion
+import com.eviware.soapui.impl.wsdl.teststeps.assertions.ProGroovyScriptAssertion
+import com.eviware.soapui.impl.wsdl.teststeps.ProJdbcRequestTestStep
+
+def logPrefix = 'TestRunListener.beforeRun:' + testRunner.getTestCase().getName() + ": "
+
+testRunner.getTestCase().getTestSteps().each{testStepName, testStep  ->
+
+    logPrefix = 'TestRunListener.beforeRun:' + testRunner.getTestCase().getName() + ':' + testStepName + ": "
+
+    // Only check enabled test steps.
+    if(!testStep.isDisabled()){
+
+        // Test step specific checks.
+        if(testStep in ProJdbcRequestTestStep){
+            if(testStep.getAssertionList().find{ jdbcAssertion -> jdbcAssertion in JdbcStatusAssertion } == null){
+                log.warn(logPrefix + 'This is a JDBC Test Step, but does not have a JDBC Status assertion.')
+            }
+        }
+
+        if (testStep in com.eviware.soapui.model.testsuite.Assertable){
+            testStep.getAssertionList().each{ testAssertion ->
+
+                // Generic assertion checks
+                if(testAssertion.isDisabled()){
+                    log.warn(logPrefix + 'Assertion "' + testAssertion.getName() + '" is disabled.')
+                }
+
+                // Specific assertion type checks
+                switch (testAssertion) {
+
+                    case ProXPathContainsAssertion:
+                    case XPathContainsAssertion:
+
+                        if(!testAssertion.getPath().trim()){
+                            log.warn(logPrefix + 'Assertion "' + testAssertion.getName() + '" XPath Expression is blank.')
+                        }
+
+                        if(!testAssertion.getExpectedContent().trim()){
+                            log.warn(logPrefix + 'Assertion "' + testAssertion.getName() + '" Expected Result is blank.')
+                        }
+
+                        if(testAssertion.getName().equals('XPath Match')){
+                            log.warn(logPrefix + 'Assertion "' + testAssertion.getName() + '" still has the default name.')
+                        }
+
+                        break
+
+                    case ProGroovyScriptAssertion:
+                    case GroovyScriptAssertion:
+
+                        if(!testAssertion.getScriptText().trim()){
+                            log.warn(logPrefix + 'Assertion "' + testAssertion.getName() + '" Script is blank.')
+                        }
+
+                        if(testAssertion.getName().equals('Script Assertion')){
+                            log.warn(logPrefix + 'Assertion "' + testAssertion.getName() + '" still has the default name.')
+                        }
+
+                        break
+                }
+            }
+        }
+    }
+}
+ 
+
+Looking at the WsdlTestStep java docs, I see that there is a "setDisabled" method. I have never used this but perhaps you might be able to do something like:
+
+ 
+
+def logPrefix = 'TestRunListener.beforeRun:' + testRunner.getTestCase().getName() + ": "
+
+testRunner.getTestCase().getTestSteps().each{testStepName, testStep  ->
+
+	log.info(logPrefix + 'Initially test step ' + testStep.getName() + ' isDisabled() = ' + testStep.isDisabled())
+	
+	// Flip the disabled status of the test step
+	if(testStep.isDisabled()){
+		testStep.setDisabled(false)
+	}else{
+		testStep.setDisabled(true)
+	}
+	
+	log.info(logPrefix + 'Updated test step ' + testStep.getName() + ' isDisabled() = ' + testStep.isDisabled())
+}
+ 
