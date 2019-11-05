@@ -8,6 +8,7 @@ testRunner.testCase.properties.each
 }
 
 ***GET
+def TC = testRunner.testCase.testSuite.project.getTestSuiteByName("Resource Manger (SRM)").getTestCaseByName("SRMTestCase")
 //Project
 def projectProp = testRunner.testCase.testSuite.project.getPropertyValue("Name")
 log.info ("Project Property = "+projectProp)
