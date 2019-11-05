@@ -1,0 +1,18 @@
+/**********************************************************************************************************************
+*************************Trasfer property******************************************************************************
+**********************************************************************************************************************/
+// simple from request
+https://community.smartbear.com/t5/SoapUI-Pro/How-to-transfer-a-value-from-one-test-case-to-another-using/td-p/144060
+
+def accountId = new XmlSlurper().parseText(context.response).'**'.find{it.name() == 'AccountId'}.text()
+context.testCase.testSuite.setPropertyValue('ACCOUNT_ID, accountId)
+
+// another way
+import com.eviware.soapui.support.XmlHolder
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
+def holder = groovyUtils.getXmlHolder( messageExchange.responseContentAsXml )
+def transferValue = holder["//*:XPATH/*:to/*:Element"]
+context.testCase.testSuite.setPropertyValue("PropertyNameHere", transferValue);
+
+// save from one test case to another
+??? get name ??? set ???
