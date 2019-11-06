@@ -1,2 +1,54 @@
 https://github.com/olensmar/soapui-groovy-console-plugin
 http://olensmar.blogspot.com/2013/02/a-groovy-console-for-soapui.html
+// more plugins
+http://olensmar.blogspot.com/p/soapui-plugins.html
+
+Plugin                Description                                                       Version      SourceCode          Download
+RAML / APIHub Plugin  Adds RAML and APIHub import functionality                         0.2          GitHub              SourceForge
+read more:
+http://olensmar.blogspot.se/2013/12/a-raml-apihub-plugin-for-soapui.html
+GitHub:
+https://github.com/olensmar/soapui-raml-plugin
+SourceForge:
+https://sourceforge.net/projects/soapui-plugins/files/soapui-raml-plugin/
+
+Swagger Plugin        Adds Swagger import and export functionality                      0.3          GitHub              SourceForge
+read more:
+http://olensmar.blogspot.se/2013/05/soapui-swagger-true.html
+GitHub:
+https://github.com/olensmar/soapui-swagger-plugin
+SourceForge:
+https://sourceforge.net/projects/soapui-plugins/files/soapui-swagger-plugin/
+
+Groovy Console      Adds an interactive Groovy console for arbitraty scripting tasks.   1.0         GitHub               SourceForge
+read more:
+http://olensmar.blogspot.se/2013/05/soapui-swagger-true.html
+GitHub:
+https://github.com/olensmar/soapui-groovy-console-plugin
+SourceForge:
+https://sourceforge.net/projects/soapui-plugins/files/soapui-groovy-console-plugin/
+
+ProgrammableWeb Plugin                                                                  1.0         GitHub               SourceForge
+Makes it possible to browse and import APIs from the ProgrammableWeb API directory
+read more:
+http://olensmar.blogspot.se/2013/02/a-programmableweb-plugin-for-soapui.html
+GitHub:
+https://github.com/olensmar/soapui-programmableweb-plugin
+SourceForge:
+https://sourceforge.net/projects/soapui-plugins/files/soapui-programmableweb-plugin/
+
+Runscope Plugin     Reroutes all requests through the Runscope platform                 1.0         GitHub               SourceForge
+read more:
+http://olensmar.blogspot.se/2013/06/a-soapui-plugin-for-runscope.html
+GitHub:
+https://github.com/olensmar/soapui-runscope-plugin
+SourceForge:
+https://sourceforge.net/projects/soapui-plugins/files/soapui-runscope-plugin/
+
+Email TestStep      Adds a custom TestStep for sending emails from a TestCase           1.0         GitHub               SourceForge
+read more:
+http://blog.smartbear.com/sqc/creating-your-own-teststeps-in-soapui/
+GitHub:
+https://github.com/olensmar/soapui-emailtestsstep-plugin
+SourceForge:
+https://sourceforge.net/projects/soapui-plugins/files/soapui-emailteststep-plugin/?
