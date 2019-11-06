@@ -8,7 +8,8 @@ testRunner.testCase.properties.each
 }
 
 ***GET
-def TC = testRunner.testCase.testSuite.project.getTestSuiteByName("Resource Manger (SRM)").getTestCaseByName("SRMTestCase")
+def TC = testRunner.testCase.testSuite.project.getTestSuiteByName("E2E-HU-TollContractOperation-All_Process").getTestCaseByName("Activation_TollContract").getTestStepByName("run TestCase MasterData_preparing")
+TC.disabled = false;
 //Project
 def projectProp = testRunner.testCase.testSuite.project.getPropertyValue("Name")
 log.info ("Project Property = "+projectProp)
