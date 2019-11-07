@@ -1,0 +1,12 @@
+import static com.jayway.jsonpath.JsonPath.parse
+
+// urcuje se kterym stepem pred timto chceme pracovat
+def previousTestStep = context.testCase.getTestStepAt(context.currentStepIndex - 2)
+// pokud chcete i previous response tak '${' + previousTestStep.name + '#Request}' zmenit za ResponseAsXml
+//log.info previousTestStep.name
+def response = context.expand( '${' + previousTestStep.name + '#Response}' )
+
+def returnCode = parse(response).read('$.response.responseBody.returnCode')
+log.info returnCode
+
+if (returnCode!='0') testRunner.gotoStepByName("ObeStatus_sent_NOK")
