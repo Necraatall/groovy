@@ -1,0 +1,12 @@
+********************************************************************************************
+********************** Test Case
+********************************************************************************************
+
+
+// run Activation_Site Test Case
+def tCase = testRunner.testCase.testSuite.testCases["Activation_Site"]
+def prop = new com.eviware.soapui.support.types.StringToObjectMap()
+runner = tCase.run(prop, false);
+
+log.info ("   >>>    " + runner.getStatus().toString())
+
