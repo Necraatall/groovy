@@ -1,0 +1,47 @@
+*************************************************************************************************
+************************** Test Step in another Test Case ***************************************
+*************************************************************************************************
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
+def tCase = testRunner.testCase.testSuite.testCases["Activation_Site"]
+log.info "testCase " testCase 
+def testStep = testCase.getTestStepAt(0);
+log.info "testStep 0: " testStep
+def testStep2 = testCase.getTestStepByName("Create Rep");
+def testStep3 = testCase.testSteps["Delay"];
+testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+testStep.run(testRunner, testStepContext);
+log.info ("   >>>    " + testRunner.getStatus().toString())
+
+//      OR simple, but... how to done it
+responseContentUpdate = testRunner.testCase.testSuite.getTestCaseByName("TestCase").getTestStepByName("TestStep").run(testRunner, context).getResponseContent();
+log.info ("   >>>    " + testRunner.getStatus().toString())
+
+// or
+// i recomend not to have disabled test steps in running test case
+// n is count of test step from zero is first
+// project is test suite
+// if you have groovy scripts for generating data, better way is to save them on properties in test case
+// please comment this and give me some clues how to make it more easy, simple or complex
+// dont know how much capacity have array for runner - when i tryed lots of test cases with at least 100 test steps, groovy step inform me by error sign about small array, if it is not in some setups of groovy script log
+
+// run Activation_TollContract Test Case
+def testSuite = testRunner.testCase.testSuite.project.getTestSuiteByName("Write_name_of_test_suite_here");        	        //get test suite by name
+//log.info "testSuite " + context.getTestCase().getTestStepAt(n).name
+def testCase = testSuite.getTestCaseByName("Write_name_of_test_case_here");												                          //get test case by name
+//log.info "testCase: " + testCase  
+def totalTestSteps = testCase.getTestSteps().size();   															                                        //get int total test steps for the given test case
+//log.info "totalTestSteps " + totalTestSteps
+def PROJECT = testRunner.testCase.testSuite.project.getTestSuiteByName("Write_name_of_test_suite_here")
+for(n in (0..totalTestSteps - 1))
+{    
+    def testStepName = testCase.getTestStepAt(n).name;
+    if(n>=5){
+    		if (PROJECT.getTestCaseByName("Write_name_of_test_case_here").getTestStepByName(testStepName).disabled != true){
+    	   log.info "testStepName: " + n + ": " + testStepName;
+    	   def testStep = testSuite.getTestCaseByName("Write_name_of_test_case_here").getTestStepByName(testStepName); 				//get nameMap of step
+        runner = testStep.run(testRunner, context);
+        log.info ("testStep   >>> 1   " + runner.getStatus().toString());
+    		}
+    }
+}
