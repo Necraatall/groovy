@@ -1,0 +1,19 @@
+*************************************************************************************************
+************************** Test Step in another Test Case ***************************************
+*************************************************************************************************
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
+def tCase = testRunner.testCase.testSuite.testCases["Activation_Site"]
+log.info "testCase " testCase 
+def testStep = testCase.getTestStepAt(0);
+log.info "testStep 0: " testStep
+def testStep2 = testCase.getTestStepByName("Create Rep");
+def testStep3 = testCase.testSteps["Delay"];
+testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+testStep.run(testRunner, testStepContext);
+
+log.info ("   >>>    " + testRunner.getStatus().toString())
+
+//      OR simple, but... how to done it
+responseContentUpdate = testRunner.testCase.testSuite.getTestCaseByName("TestCase").getTestStepByName("TestStep").run(testRunner, context).getResponseContent();
+log.info ("   >>>    " + testRunner.getStatus().toString())
