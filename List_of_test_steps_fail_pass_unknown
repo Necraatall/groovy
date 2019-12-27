@@ -1,0 +1,24 @@
+/********************we may use it as tear down script **********************/
+
+//def actual test Case and Test STep 
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
+def testCase = testRunner.testCase;
+def testStep = testCase.getTestStepAt(context.currentStepIndex + 2);
+
+// here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
+def StepList = testCase.getTestStepList()
+StepList.each{
+    // check that testStep has assertionStatus 
+    // (for example groovy testSteps hasn't this property since
+    // there is no asserts on its)
+    if(it.metaClass.hasProperty(it,'assertionStatus')){
+        if(it.assertionStatus == AssertionStatus.FAILED){
+            log.error "${it.name} FAIL ... Time to make bug."
+        }else if(it.assertionStatus == AssertionStatus.VALID){
+            log.info "${it.name} OK!"
+        }else if(it.assertionStatus == AssertionStatus.UNKNOWN){
+            log.info "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED)"
+        }
+    	  }
+	 }
+    
