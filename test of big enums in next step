@@ -2,32 +2,32 @@
 /*
 1. def enum
 2. def utills, testcase ID, teststep ID (next 1th one)
-3. set property tollContractStatus[0]
+3. set property technicalPartner[0]
 4. run test step +1
 5. def step list
 6. if test step fail/Ok/UNKNOWN - defined by assertions 
-7. run for cyclus for each in collection tollContractStatus
-8. set tollContractStatus value by the list item from previous collection cyrcle
-9. set tollContractStatus to some normal value
-10.set value of country element in MTD next step by this: ${#TestCase#tollContractStatus}
+7. run for cyclus for each in collection technicalPartner
+8. set technicalPartner value by the list item from previous collection cyrcle
+9. set technicalPartner to some normal value
+10.set value of country element in MTD next step by this: ${#TestCase#technicalPartner}
 */
 import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
 // firsthly def ArrayList - enums
 // this enums is available for change if another enums will change, dont change another part of code
-List<String> tollContractStatus = new ArrayList<String> (["0", "1", "2"])
+List<String> technicalPartner = new ArrayList<String> (["ATSC", "VPS", "ORESUND", "WAGAS", "ASF", "SBFB", "BRS", "FLN", "STC", "SFC"])
 
 log.info "!!!!!!!Dont stop this Test Step!!!!!!!!!"
 log.info "!!!!!!!Dont change this Test Step when run!!!!!!!!!"
 log.info "!!!!!!!Wait for results at least 10 minutes!!!!!!!!!"
 
-//def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next one) 
+//def actual test Case and Test Step into MTD-ODS-ESB-technicalPartner-all (next one) 
 def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
 def testCase = testRunner.testCase;
 def testStep = testCase.getTestStepAt(context.currentStepIndex + 1);
 
-//set property tollContractStatus with value item into TestCase
-testRunner.testCase.setPropertyValue("tollContractStatus", tollContractStatus[0])
-   //log.info testStep + ": " + tollContractStatus[0]
+//set property technicalPartner with value item into TestCase
+testRunner.testCase.setPropertyValue("technicalPartner", technicalPartner[0])
+   //log.info testStep + ": " + technicalPartner[0]
    
 //now run test step (will be run by count of enum values)
 testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
@@ -37,22 +37,22 @@ testStep.run(testRunner, testStepContext);
 // here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
 def StepList = testCase.getTestStepList()
 
-if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null){
+if (technicalPartner != technicalPartner[0] && technicalPartner[0] != null){
 	StepList.each{
     	  if(it==testStep){
     		if(it.metaClass.hasProperty(it,'assertionStatus')){
         		if(it.assertionStatus == AssertionStatus.FAILED){
-            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
+            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("technicalPartner")
             		testRunner.cancel( "Stop the testRunner" )
 				return
         			}
         			else if(it.assertionStatus == AssertionStatus.VALID){
             		log.info "${it.name} OK!"
             		
-					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-tollContractStatus-all (next 1th test step)
-					for (String item : tollContractStatus) {
-						//set property tollContractStatus with value item into TestCase
-						testRunner.testCase.setPropertyValue("tollContractStatus", item)
+					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-technicalPartner-all (next 1th test step)
+					for (String item : technicalPartner) {
+						//set property technicalPartner with value item into TestCase
+						testRunner.testCase.setPropertyValue("technicalPartner", item)
    						//log.info testStep + ": " + item
    						
 						//now run test step (will be run by count of enum values)
@@ -61,224 +61,10 @@ if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null
 						testStep.run(testRunner, testStepContext);
 						testRunner.cancel( "Stop the testRunner" )
 					}
-				log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in ESB."
+				log.info "All technicalPartner enum validations of technicalPartner for MasterData is correct in ESB."
         			}
         			else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("tollContractStatus")
-					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-Country-all (next 1th test step)
-					for (String item : country) {
-						//set property country with value item into TestCase
-						testRunner.testCase.setPropertyValue("country", item)
-   						//log.info testStep + ": " + item
-   						
-						//now run test step (will be run by count of enum values)
-						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-						testStep.run(testRunner, testStepContext);
-						testRunner.cancel( "Stop the testRunner" )
-					}
-					log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TPL."
-        			}
-        		}
-    		}
-    }
-}
-// now set property in Test case into normal value for Hungary "HU"
-testRunner.testCase.setPropertyValue("country", "HU")
-
-**************Multiple*******************
-/***********************enum test*************/
-/*
-1. def enum
-2. def utills, testcase ID, teststep ID (next 1th one)
-3. set property tollContractStatus[0]
-4. run test step +1
-5. def step list
-6. if test step fail/Ok/UNKNOWN - defined by assertions 
-7. run for cyclus for each in collection tollContractStatus
-8. set tollContractStatus value by the list item from previous collection cyrcle
-9. set tollContractStatus to some normal value
-10.set value of country element in MTD next step by this: ${#TestCase#tollContractStatus}
-*/
-import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
-// firsthly def ArrayList - enums
-// this enums is available for change if another enums will change, dont change another part of code
-List<String> tollContractStatus = new ArrayList<String> (["0", "1", "2"])
-
-log.info "!!!!!!!Dont stop this Test Step!!!!!!!!!"
-log.info "!!!!!!!Dont change this Test Step when run!!!!!!!!!"
-log.info "!!!!!!!Wait for results at least 10 minutes!!!!!!!!!"
-
-//def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next one) 
-def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
-def testCase = testRunner.testCase;
-def testStep = testCase.getTestStepAt(context.currentStepIndex + 1);
-
-//set property tollContractStatus with value item into TestCase
-testRunner.testCase.setPropertyValue("tollContractStatus", tollContractStatus[0])
-   //log.info testStep + ": " + tollContractStatus[0]
-   
-//now run test step (will be run by count of enum values)
-testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-testStep.run(testRunner, testStepContext);
-
-// here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
-def StepList = testCase.getTestStepList()
-
-if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null){
-	StepList.each{
-    	  if(it==testStep){
-    		if(it.metaClass.hasProperty(it,'assertionStatus')){
-        		if(it.assertionStatus == AssertionStatus.FAILED){
-            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
-            		testRunner.cancel( "Stop the testRunner" )
-				return
-        			}
-        			else if(it.assertionStatus == AssertionStatus.VALID){
-            		log.info "${it.name} OK!"
-            		
-					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-tollContractStatus-all (next 1th test step)
-					for (String item : tollContractStatus) {
-						//set property tollContractStatus with value item into TestCase
-						testRunner.testCase.setPropertyValue("tollContractStatus", item)
-   						//log.info testStep + ": " + item
-   						
-						//now run test step (will be run by count of enum values)
-						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-						testStep.run(testRunner, testStepContext);
-						testRunner.cancel( "Stop the testRunner" )
-					}
-				log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in ESB."
-        			}
-        			else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("tollContractStatus")
-					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-Country-all (next 1th test step)
-					for (String item : country) {
-						//set property country with value item into TestCase
-						testRunner.testCase.setPropertyValue("country", item)
-   						//log.info testStep + ": " + item
-   						
-						//now run test step (will be run by count of enum values)
-						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-						testStep.run(testRunner, testStepContext);
-						testRunner.cancel( "Stop the testRunner" )
-					}
-					log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TPL."
-        			}
-        		}
-    		}
-    }
-}
-
-//def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next 2nd one)
-testStep = testCase.getTestStepAt(context.currentStepIndex + 2);
-
-//set property tollContractStatus with value item into TestCase
-testRunner.testCase.setPropertyValue("tollContractStatus", tollContractStatus[0])
-   //log.info testStep + ": " + tollContractStatus[0]
-   
-//now run test step (will be run by count of enum values)
-testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-testStep.run(testRunner, testStepContext);
-
-// here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
-StepList = testCase.getTestStepList()
-
-if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null){
-	StepList.each{
-    	  if(it==testStep){
-    		if(it.metaClass.hasProperty(it,'assertionStatus')){
-        		if(it.assertionStatus == AssertionStatus.FAILED){
-            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
-            		testRunner.cancel( "Stop the testRunner" )
-				return
-        			}
-        			else if(it.assertionStatus == AssertionStatus.VALID){
-            		log.info "${it.name} OK!"
-            		
-					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-tollContractStatus-all (next 1th test step)
-					for (String item : tollContractStatus) {
-						//set property tollContractStatus with value item into TestCase
-						testRunner.testCase.setPropertyValue("tollContractStatus", item)
-   						//log.info testStep + ": " + item
-   						
-						//now run test step (will be run by count of enum values)
-						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-						testStep.run(testRunner, testStepContext);
-						testRunner.cancel( "Stop the testRunner" )
-					}
-				log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TLM."
-        			}
-        			else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("tollContractStatus")
-					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-Country-all (next 1th test step)
-					for (String item : country) {
-						//set property country with value item into TestCase
-						testRunner.testCase.setPropertyValue("country", item)
-   						//log.info testStep + ": " + item
-   						
-						//now run test step (will be run by count of enum values)
-						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-						testStep.run(testRunner, testStepContext);
-						testRunner.cancel( "Stop the testRunner" )
-					}
-					log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TPL."
-        			}
-        		}
-    		}
-    }
-}
-
-
-//def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next 3rd one)
-testStep = testCase.getTestStepAt(context.currentStepIndex + 3);
-
-//set property tollContractStatus with value item into TestCase
-testRunner.testCase.setPropertyValue("tollContractStatus", tollContractStatus[0])
-   //log.info testStep + ": " + tollContractStatus[0]
-   
-//now run test step (will be run by count of enum values)
-testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-testStep.run(testRunner, testStepContext);
-
-// here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
-StepList = testCase.getTestStepList()
-
-if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null){
-	StepList.each{
-    	  if(it==testStep){
-    		if(it.metaClass.hasProperty(it,'assertionStatus')){
-        		if(it.assertionStatus == AssertionStatus.FAILED){
-            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
-            		testRunner.cancel( "Stop the testRunner" )
-				return
-        			}
-        			else if(it.assertionStatus == AssertionStatus.VALID){
-            		log.info "${it.name} OK!"
-            		
-					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-tollContractStatus-all (next 1th test step)
-					for (String item : tollContractStatus) {
-						//set property tollContractStatus with value item into TestCase
-						testRunner.testCase.setPropertyValue("tollContractStatus", item)
-   						//log.info testStep + ": " + item
-   						
-						//now run test step (will be run by count of enum values)
-						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-						testStep.run(testRunner, testStepContext);
-						testRunner.cancel( "Stop the testRunner" )
-					}
-				log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TPL."
-        			}
-        			else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("tollContractStatus")
+            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("technicalPartner")
             			// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-Country-all (next 1th test step)
 					for (String item : country) {
 						//set property country with value item into TestCase
@@ -299,4 +85,219 @@ if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null
 }
 
 // now set property in Test case into normal value for Hungary "HU"
-testRunner.testCase.setPropertyValue("tollContractStatus", "0")
+testRunner.testCase.setPropertyValue("country", "HU")
+
+**************Multiple*******************
+/***********************enum test*************/
+/*
+1. def enum
+2. def utills, testcase ID, teststep ID (next 1th one)
+3. set property technicalPartner[0]
+4. run test step +1
+5. def step list
+6. if test step fail/Ok/UNKNOWN - defined by assertions 
+7. run for cyclus for each in collection technicalPartner
+8. set technicalPartner value by the list item from previous collection cyrcle
+9. set technicalPartner to some normal value
+10.set value of country element in MTD next step by this: ${#TestCase#technicalPartner}
+*/
+import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
+// firsthly def ArrayList - enums
+// this enums is available for change if another enums will change, dont change another part of code
+List<String> technicalPartner = new ArrayList<String> (["ATSC", "VPS", "ORESUND", "WAGAS", "ASF", "SBFB", "BRS", "FLN", "STC", "SFC"])
+
+log.info "!!!!!!!Dont stop this Test Step!!!!!!!!!"
+log.info "!!!!!!!Dont change this Test Step when run!!!!!!!!!"
+log.info "!!!!!!!Wait for results at least 10 minutes!!!!!!!!!"
+
+//def actual test Case and Test Step into MTD-ODS-ESB-technicalPartner-all (next one) 
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
+def testCase = testRunner.testCase;
+def testStep = testCase.getTestStepAt(context.currentStepIndex + 1);
+
+//set property technicalPartner with value item into TestCase
+testRunner.testCase.setPropertyValue("technicalPartner", technicalPartner[0])
+   //log.info testStep + ": " + technicalPartner[0]
+   
+//now run test step (will be run by count of enum values)
+testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+testStep.run(testRunner, testStepContext);
+
+// here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
+def StepList = testCase.getTestStepList()
+
+if (technicalPartner != technicalPartner[0] && technicalPartner[0] != null){
+	StepList.each{
+    	  if(it==testStep){
+    		if(it.metaClass.hasProperty(it,'assertionStatus')){
+        		if(it.assertionStatus == AssertionStatus.FAILED){
+            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("technicalPartner")
+            		testRunner.cancel( "Stop the testRunner" )
+				return
+        			}
+        			else if(it.assertionStatus == AssertionStatus.VALID){
+            		log.info "${it.name} OK!"
+            		
+					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-technicalPartner-all (next 1th test step)
+					for (String item : technicalPartner) {
+						//set property technicalPartner with value item into TestCase
+						testRunner.testCase.setPropertyValue("technicalPartner", item)
+   						//log.info testStep + ": " + item
+   						
+						//now run test step (will be run by count of enum values)
+						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+						testStep.run(testRunner, testStepContext);
+						testRunner.cancel( "Stop the testRunner" )
+					}
+				log.info "All technicalPartner enum validations of technicalPartner for MasterData is correct in ESB."
+        			}
+        			else if(it.assertionStatus == AssertionStatus.UNKNOWN){
+            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("technicalPartner")
+            			// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-Country-all (next 1th test step)
+					for (String item : country) {
+						//set property country with value item into TestCase
+						testRunner.testCase.setPropertyValue("country", item)
+   						//log.info testStep + ": " + item
+   						
+						//now run test step (will be run by count of enum values)
+						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+						testStep.run(testRunner, testStepContext);
+						testRunner.cancel( "Stop the testRunner" )
+					}
+					log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TPL."
+        			}
+        		}
+    		}
+    }
+}
+
+//def actual test Case and Test Step into MTD-ODS-ESB-technicalPartner-all (next 2nd one)
+testStep = testCase.getTestStepAt(context.currentStepIndex + 2);
+
+//set property technicalPartner with value item into TestCase
+testRunner.testCase.setPropertyValue("technicalPartner", technicalPartner[0])
+   //log.info testStep + ": " + technicalPartner[0]
+   
+//now run test step (will be run by count of enum values)
+testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+testStep.run(testRunner, testStepContext);
+
+// here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
+StepList = testCase.getTestStepList()
+
+if (technicalPartner != technicalPartner[0] && technicalPartner[0] != null){
+	StepList.each{
+    	  if(it==testStep){
+    		if(it.metaClass.hasProperty(it,'assertionStatus')){
+        		if(it.assertionStatus == AssertionStatus.FAILED){
+            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("technicalPartner")
+            		testRunner.cancel( "Stop the testRunner" )
+				return
+        			}
+        			else if(it.assertionStatus == AssertionStatus.VALID){
+            		log.info "${it.name} OK!"
+            		
+					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-technicalPartner-all (next 1th test step)
+					for (String item : technicalPartner) {
+						//set property technicalPartner with value item into TestCase
+						testRunner.testCase.setPropertyValue("technicalPartner", item)
+   						//log.info testStep + ": " + item
+   						
+						//now run test step (will be run by count of enum values)
+						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+						testStep.run(testRunner, testStepContext);
+						testRunner.cancel( "Stop the testRunner" )
+					}
+				log.info "All technicalPartner enum validations of technicalPartner for MasterData is correct in TLM."
+        			}
+        			else if(it.assertionStatus == AssertionStatus.UNKNOWN){
+            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("technicalPartner")
+            			// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-Country-all (next 1th test step)
+					for (String item : country) {
+						//set property country with value item into TestCase
+						testRunner.testCase.setPropertyValue("country", item)
+   						//log.info testStep + ": " + item
+   						
+						//now run test step (will be run by count of enum values)
+						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+						testStep.run(testRunner, testStepContext);
+						testRunner.cancel( "Stop the testRunner" )
+					}
+					log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TPL."
+        			}
+        		}
+    		}
+    }
+}
+
+
+//def actual test Case and Test Step into MTD-ODS-ESB-technicalPartner-all (next 3rd one)
+testStep = testCase.getTestStepAt(context.currentStepIndex + 3);
+
+//set property technicalPartner with value item into TestCase
+testRunner.testCase.setPropertyValue("technicalPartner", technicalPartner[0])
+   //log.info testStep + ": " + technicalPartner[0]
+   
+//now run test step (will be run by count of enum values)
+testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+testStep.run(testRunner, testStepContext);
+
+// here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
+StepList = testCase.getTestStepList()
+
+if (technicalPartner != technicalPartner[0] && technicalPartner[0] != null){
+	StepList.each{
+    	  if(it==testStep){
+    		if(it.metaClass.hasProperty(it,'assertionStatus')){
+        		if(it.assertionStatus == AssertionStatus.FAILED){
+            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("technicalPartner")
+            		testRunner.cancel( "Stop the testRunner" )
+				return
+        			}
+        			else if(it.assertionStatus == AssertionStatus.VALID){
+            		log.info "${it.name} OK!"
+            		
+					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-technicalPartner-all (next 1th test step)
+					for (String item : technicalPartner) {
+						//set property technicalPartner with value item into TestCase
+						testRunner.testCase.setPropertyValue("technicalPartner", item)
+   						//log.info testStep + ": " + item
+   						
+						//now run test step (will be run by count of enum values)
+						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+						testStep.run(testRunner, testStepContext);
+						testRunner.cancel( "Stop the testRunner" )
+					}
+				log.info "All technicalPartner enum validations of technicalPartner for MasterData is correct in TPL."
+        			}
+        			else if(it.assertionStatus == AssertionStatus.UNKNOWN){
+            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("technicalPartner")
+            			// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-Country-all (next 1th test step)
+					for (String item : country) {
+						//set property country with value item into TestCase
+						testRunner.testCase.setPropertyValue("country", item)
+   						//log.info testStep + ": " + item
+   						
+						//now run test step (will be run by count of enum values)
+						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
+						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
+						testStep.run(testRunner, testStepContext);
+						testRunner.cancel( "Stop the testRunner" )
+					}
+					log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TPL."
+        			}
+        		}
+    		}
+    }
+}
+
+// now set property in Test case into normal value for Hungary "HU"
+testRunner.testCase.setPropertyValue("technicalPartner", "WAGAS")
