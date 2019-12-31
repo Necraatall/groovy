@@ -1,5 +1,8 @@
 /***********************enum test*************/
 /*
+* For enums of big you need some wait between requests working on it
+*/
+/*
 1. def enum
 2. def utills, testcase ID, teststep ID (next 1th one)
 3. set property technicalPartner[0]
