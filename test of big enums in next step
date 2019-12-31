@@ -89,6 +89,7 @@ if (vehicleStatus != vehicleStatus[0] && vehicleStatus[0] != null){
 							}	
 						}
 					}
+					i = 0;
         			}
         		}
     		}
