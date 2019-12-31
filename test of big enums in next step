@@ -1,98 +1,7 @@
 /***********************enum test*************/
 /*
-1. def enum
-2. def utills, testcase ID, teststep ID (next 1th one)
-3. set property technicalPartner[0]
-4. run test step +1
-5. def step list
-6. if test step fail/Ok/UNKNOWN - defined by assertions 
-7. run for cyclus for each in collection technicalPartner
-8. set technicalPartner value by the list item from previous collection cyrcle
-9. set technicalPartner to some normal value
-10.set value of country element in MTD next step by this: ${#TestCase#technicalPartner}
+* Someday need to update steps and make header and response check more simple
 */
-import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
-// firsthly def ArrayList - enums
-// this enums is available for change if another enums will change, dont change another part of code
-List<String> technicalPartner = new ArrayList<String> (["ATSC", "VPS", "ORESUND", "WAGAS", "ASF", "SBFB", "BRS", "FLN", "STC", "SFC"])
-
-log.info "!!!!!!!Dont stop this Test Step!!!!!!!!!"
-log.info "!!!!!!!Dont change this Test Step when run!!!!!!!!!"
-log.info "!!!!!!!Wait for results at least 10 minutes!!!!!!!!!"
-
-//def actual test Case and Test Step into MTD-ODS-ESB-technicalPartner-all (next one) 
-def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
-def testCase = testRunner.testCase;
-def testStep = testCase.getTestStepAt(context.currentStepIndex + 1);
-
-//set property technicalPartner with value item into TestCase
-testRunner.testCase.setPropertyValue("technicalPartner", technicalPartner[0])
-   //log.info testStep + ": " + technicalPartner[0]
-   
-//now run test step (will be run by count of enum values)
-testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-testStep.run(testRunner, testStepContext);
-sleep(new Random().nextInt(10) * 100);
-testRunner.cancel( "Stop the testRunner" );
-
-// here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
-def StepList = testCase.getTestStepList()
-
-if (technicalPartner != technicalPartner[0] && technicalPartner[0] != null){
-	StepList.each{
-    	  if(it==testStep){
-    		if(it.metaClass.hasProperty(it,'assertionStatus')){
-        		if(it.assertionStatus == AssertionStatus.FAILED){
-            		log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("technicalPartner")
-            		testRunner.cancel( "Stop the testRunner" )
-				return
-        			}
-        			else if(it.assertionStatus == AssertionStatus.VALID){
-            		log.info "${it.name} OK!"
-            		
-					// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-technicalPartner-all (next 1th test step)
-					for (String item : technicalPartner) {
-						//set property technicalPartner with value item into TestCase
-						testRunner.testCase.setPropertyValue("technicalPartner", item)
-   						//log.info testStep + ": " + item
-   						
-						//now run test step (will be run by count of enum values)
-						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-						testStep.run(testRunner, testStepContext);
-						sleep(new Random().nextInt(10) * 100);
-						testRunner.cancel( "Stop the testRunner" );
-					}
-				log.info "All technicalPartner enum validations of technicalPartner for MasterData is correct in ESB."
-        			}
-        			else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            			log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("technicalPartner")
-            			// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-Country-all (next 1th test step)
-					for (String item : country) {
-						//set property country with value item into TestCase
-						testRunner.testCase.setPropertyValue("country", item)
-   						//log.info testStep + ": " + item
-   						
-						//now run test step (will be run by count of enum values)
-						testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
-						testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
-						testStep.run(testRunner, testStepContext);
-						sleep(new Random().nextInt(10) * 100);
-						testRunner.cancel( "Stop the testRunner" );
-					}
-					log.info "All tollContractStatus enum validations of tollContractStatus for MasterData is correct in TPL."
-        			}
-        		}
-    		}
-    }
-}
-
-// now set property in Test case into normal value for Hungary "HU"
-testRunner.testCase.setPropertyValue("country", "HU")
-
-**************Multiple*******************
-/***********************enum test*************/
 /*
 1. def enum
 2. def utills, testcase ID, teststep ID (next 1th one)
@@ -104,8 +13,13 @@ testRunner.testCase.setPropertyValue("country", "HU")
 8. set vehicleStatus value by the list item from previous collection cyrcle
 9. set vehicleStatus to some normal value
 10.set value of country element in MTD next step by this: ${#TestCase#vehicleStatus}
+11.assert in failed step not Http 200 and returnCode not 0
 */
 import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
+//Validate response nodes REST
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+
 // firsthly def ArrayList - enums
 // this enums is available for change if another enums will change, dont change another part of code
 List<String> vehicleStatus = new ArrayList<String> (["0", "1"])
@@ -120,10 +34,9 @@ def testCase = testRunner.testCase;
 
 // here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
 StepList = testCase.getTestStepList()
-
+ 
 if (vehicleStatus != vehicleStatus[0] && vehicleStatus[0] != null){
 	StepList.each{
-
 				// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-vehicleStatus-all (next 1th test step)
 					for (String item : vehicleStatus) {
 						for (i = 1; i <4; i++) { 
@@ -144,13 +57,34 @@ if (vehicleStatus != vehicleStatus[0] && vehicleStatus[0] != null){
 							if(it.metaClass.hasProperty(it,'assertionStatus')){
 								if(it.assertionStatus == AssertionStatus.FAILED){
             							log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("vehicleStatus")
+									//def response = context.expand('${'+ testStep + '#Response}')
+            							def response = context.expand('${'+ testStep.name + '#Response}')
+            							//log.info context.expand('${'+ testStep.name + '#Response}')
+            							def returnCode = parse(response).read('$.response.responseBody.returnCode')
+									log.info "returnCode is: " + returnCode
+									def sessionidPair
+									def token1Pair
+									def header = testRunner.testCase.getTestStepByName(testStep.name).testRequest.response.responseHeaders["#status#"].each { 
+    										if (it.contains("#status#=")) {
+    											sessionidPair = it 
+    										} 
+									}
+									if (header !=['HTTP/1.1 200 OK'] ) {
+										log.error "HTML #status# is: " + header + " it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA!"
+										return;											
+									}
+									
+									if (response !=['"returnCode": 0']){
+										log.error "\"returnCode\" is: " + response + " it MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA!"		
+										return;
+									}
             							testRunner.cancel( "Stop the testRunner" )
 								}
 							     else if(it.assertionStatus == AssertionStatus.UNKNOWN){
             							log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("vehicleStatus")
 							     }
 							     else if(it.assertionStatus == AssertionStatus.VALID){
-            							log.info "${it.name} OK!"
+            							log.info "${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("vehicleStatus")
 							     }
 							}	
 						}
@@ -163,4 +97,3 @@ if (vehicleStatus != vehicleStatus[0] && vehicleStatus[0] != null){
 
 // now set property in Test case into normal value for Hungary "HU"
 testRunner.testCase.setPropertyValue("vehicleStatus", "0")
-
