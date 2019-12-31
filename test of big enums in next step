@@ -5,14 +5,14 @@
 /*
 1. def enum
 2. def utills, testcase ID, teststep ID (next 1th one)
-3. set property vehicleStatus[0]
+3. set property tollContractStatus[0]
 4. run test step +1
 5. def step list
 6. if test step fail/Ok/UNKNOWN - defined by assertions 
-7. run for cyclus for each in collection vehicleStatus
-8. set vehicleStatus value by the list item from previous collection cyrcle
-9. set vehicleStatus to some normal value
-10.set value of country element in MTD next step by this: ${#TestCase#vehicleStatus}
+7. run for cyclus for each in collection tollContractStatus
+8. set tollContractStatus value by the list item from previous collection cyrcle
+9. set tollContractStatus to some normal value
+10.set value of country element in MTD next step by this: ${#TestCase#tollContractStatus}
 11.assert in failed step not Http 200 and returnCode not 0
 */
 import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
@@ -22,29 +22,29 @@ import static com.jayway.jsonpath.JsonPath.parse
 
 // firsthly def ArrayList - enums
 // this enums is available for change if another enums will change, dont change another part of code
-List<String> vehicleStatus = new ArrayList<String> (["0", "1"])
+List<String> tollContractStatus = new ArrayList<String> (["0", "1"])
 
 log.info "!!!!!!!Dont stop this Test Step!!!!!!!!!"
 log.info "!!!!!!!Dont change this Test Step when run!!!!!!!!!"
 log.info "!!!!!!!Wait for results at least 10 minutes!!!!!!!!!"
 
-//def actual test Case and Test Step into MTD-ODS-ESB-vehicleStatus-all (next one) 
+//def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next one) 
 def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
 def testCase = testRunner.testCase;
 
 // here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
 StepList = testCase.getTestStepList()
  
-if (vehicleStatus != vehicleStatus[0] && vehicleStatus[0] != null){
+if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null){
 	StepList.each{
-				// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-vehicleStatus-all (next 1th test step)
-					for (String item : vehicleStatus) {
+				// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-tollContractStatus-all (next 1th test step)
+					for (String item : tollContractStatus) {
 						for (i = 1; i <4; i++) { 
-							//def actual test Case and Test Step into MTD-ODS-ESB-vehicleStatus-all (next 3rd one)
+							//def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next 3rd one)
 							testStep = testCase.getTestStepAt(context.currentStepIndex + i);
 							if(it==testStep){
-							//set property vehicleStatus with value item into TestCase
-							testRunner.testCase.setPropertyValue("vehicleStatus", item)
+							//set property tollContractStatus with value item into TestCase
+							testRunner.testCase.setPropertyValue("tollContractStatus", item)
    							//log.info testStep + ": " + item
    						
 							//now run test step (will be run by count of enum values)
@@ -56,7 +56,7 @@ if (vehicleStatus != vehicleStatus[0] && vehicleStatus[0] != null){
 							
 							if(it.metaClass.hasProperty(it,'assertionStatus')){
 								if(it.assertionStatus == AssertionStatus.FAILED){
-            							log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("vehicleStatus")
+            							log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
 									//def response = context.expand('${'+ testStep + '#Response}')
             							def response = context.expand('${'+ testStep.name + '#Response}')
             							//log.info context.expand('${'+ testStep.name + '#Response}')
@@ -70,21 +70,19 @@ if (vehicleStatus != vehicleStatus[0] && vehicleStatus[0] != null){
     										} 
 									}
 									if (header !=['HTTP/1.1 200 OK'] ) {
-										log.error "HTML #status# is: " + header + " it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA!"
-										return;											
+										log.error "HTML #status# is: " + header + " it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA!"									
 									}
 									
 									if (response !=['"returnCode": 0']){
 										log.error "\"returnCode\" is: " + response + " it MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA!"		
-										return;
 									}
             							testRunner.cancel( "Stop the testRunner" )
 								}
 							     else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            							log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("vehicleStatus")
+            							log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("tollContractStatus")
 							     }
 							     else if(it.assertionStatus == AssertionStatus.VALID){
-            							log.info "${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("vehicleStatus")
+            							log.info "${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
 							     }
 							}	
 						}
@@ -97,4 +95,4 @@ if (vehicleStatus != vehicleStatus[0] && vehicleStatus[0] != null){
 
 
 // now set property in Test case into normal value for Hungary "HU"
-testRunner.testCase.setPropertyValue("vehicleStatus", "0")
+testRunner.testCase.setPropertyValue("tollContractStatus", "0")
