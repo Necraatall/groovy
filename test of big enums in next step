@@ -1,22 +1,26 @@
 /***********************enum test*************/
 /*
-* Someday need to update steps and make header and response check more simple
-*/
-/*
-1. def enum
-2. def utills, testcase ID, teststep ID (next 1th one)
-3. set property tollContractStatus[0]
-4. run test step +1
-5. def step list
-6. if test step fail/Ok/UNKNOWN - defined by assertions 
-7. run for cyclus for each in collection tollContractStatus
-8. set tollContractStatus value by the list item from previous collection cyrcle
-9. set tollContractStatus to some normal value
-10.set value of country element in MTD next step by this: ${#TestCase#tollContractStatus}
-11.assert in failed step not Http 200 and returnCode not 0
+1. import AssertionStatus for detecting state of assertions
+2. import groovy.json.JsonSlurper for dealing with json (REST)
+3. import static com.jayway.jsonpath.JsonPath.parse for parsing responses due to HTTP statuses and ReturnCodes
+4. def enum into array
+5. def utills, testcase ID
+6. def step list - it get list of test steps
+7. run for loop in each Test step from list
+8. run for loop for each in collection tollContractStatus 
+9. in loop run "current +1, current +2, current +3 Test Step 
+10.make sleep and cancel test runner - for more memory
+11. if assertionStatus is FAILED def response and detect:
+	- html[@lang="en-US" (server/SEEBURGER error) and log error 
+	- def sesion, token, header and if contains #status#= use header def
+	- if header not contains ['HTTP/1.1 200 OK'] and log error
+	- if response not contains "returnCode": 0 and log error
+	- cancel test runner for more memory
+12. if assertionStatus is UNKNOWN log error
+13. if assertionStatus is VALID log info OK	
+14. set property in Test case into normal value for active - 0
 */
 import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
-//Validate response nodes REST
 import groovy.json.JsonSlurper
 import static com.jayway.jsonpath.JsonPath.parse
 
@@ -34,8 +38,6 @@ def testCase = testRunner.testCase;
 
 // here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
 StepList = testCase.getTestStepList()
- 
-if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null){
 	StepList.each{
 				// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-tollContractStatus-all (next 1th test step)
 					for (String item : tollContractStatus) {
@@ -57,11 +59,11 @@ if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null
 							if(it.metaClass.hasProperty(it,'assertionStatus')){
 								if(it.assertionStatus == AssertionStatus.FAILED){
             							log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
-									//def response = context.expand('${'+ testStep + '#Response}')
-            							def response = context.expand('${'+ testStep.name + '#Response}')
+									def response = context.expand('${'+ testStep.name + '#Response}')
             							//log.info context.expand('${'+ testStep.name + '#Response}')
-            							def returnCode = parse(response).read('$.response.responseBody.returnCode')
-									log.info "returnCode is: " + returnCode
+            							if (context.expand('${'+ testStep.name + '#ResponseAsXml//html[@lang="en-US"]}')){
+										log.error "HTML #status# is: " + header + " it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA!"				
+										}
 									def sessionidPair
 									def token1Pair
 									def header = testRunner.testCase.getTestStepByName(testStep.name).testRequest.response.responseHeaders["#status#"].each { 
@@ -70,16 +72,16 @@ if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null
     										} 
 									}
 									if (header !=['HTTP/1.1 200 OK'] ) {
-										log.error "HTML #status# is: " + header + " it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA!"									
+										log.error "HTML #status# is NOT ['HTTP/1.1 200 OK'] it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA! Header is: " + header									
 									}
 									
-									if (response !=['"returnCode": 0']){
-										log.error "\"returnCode\" is: " + response + " it MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA!"		
+									if (response !=['"returnCode": 0'] ){
+										log.error "\"returnCode\" is not 0: it MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA! ReturnCode is (look on response) : " + response		
 									}
             							testRunner.cancel( "Stop the testRunner" )
 								}
 							     else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            							log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED) " + testRunner.testCase.getPropertyValue("tollContractStatus")
+            							log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED). Pleas Make bug to JIRA! tollContractStatus is: " + testRunner.testCase.getPropertyValue("tollContractStatus") 
 							     }
 							     else if(it.assertionStatus == AssertionStatus.VALID){
             							log.info "${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
@@ -87,12 +89,11 @@ if (tollContractStatus != tollContractStatus[0] && tollContractStatus[0] != null
 							}	
 						}
 					}
-					i = 0;
         			}
         		}
-    		}
+
     
 
 
-// now set property in Test case into normal value for Hungary "HU"
+// now set property in Test case into normal value for active - 0
 testRunner.testCase.setPropertyValue("tollContractStatus", "0")
