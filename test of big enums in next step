@@ -1,28 +1,43 @@
 /***********************enum test*************/
 /*
+ * FOR USE in ANOTHER FLOW, PLEAS CHANGE THE NAME OF VARIABLE tollContractStatus AND in Loop (for (i = 1; i <4; i++)) 
+ * value 4 into desired number of test steps runs (desired number of test steps under this one for run)
 1. import AssertionStatus for detecting state of assertions
 2. import groovy.json.JsonSlurper for dealing with json (REST)
 3. import static com.jayway.jsonpath.JsonPath.parse for parsing responses due to HTTP statuses and ReturnCodes
-4. def enum into array
-5. def utills, testcase ID
-6. def step list - it get list of test steps
-7. run for loop in each Test step from list
-8. run for loop for each in collection tollContractStatus 
-9. in loop run "current +1, current +2, current +3 Test Step 
-10.make sleep and cancel test runner - for more memory
-11. if assertionStatus is FAILED def response and detect:
-	- html[@lang="en-US" (server/SEEBURGER error) and log error 
-	- def sesion, token, header and if contains #status#= use header def
-	- if header not contains ['HTTP/1.1 200 OK'] and log error
-	- if response not contains "returnCode": 0 and log error
-	- cancel test runner for more memory
-12. if assertionStatus is UNKNOWN log error
-13. if assertionStatus is VALID log info OK	
-14. set property in Test case into normal value for active - 0
+4. import SimpleDateFormat for generating of date and timestamp
+5. def enum into array
+6. def timestamp for log.*, for saving in .log document, utills, scriptGroovy for getting the name of test Case
+7. def name for naming the creating .log file
+8. def ResFile for making address where to save log
+9. def ln - line separator for saving the logs
+11.def j for creating file on address of ResFile veriable and create the log file with first line entered (line separator)
+12.def testCase as neme of this Test Case for saving the outputs 
+13.def step list - it get list of test steps
+14.run for loop in each Test step from list to get list of test steps
+15.run for loop for each in collection tollContractStatus 
+16.in loop run "current +1, current +2, current +3 Test Step (like MTD to ESB, to TLM, to TPL -3 request afther this in list of test steps)
+17.if the test steps match the required test step defined in testStep variable, run others
+18.def response for Test Step (testStep variable) name with value of Request
+19.assert that runned request is not nul (place for better validation of request, but in this way is simple and usable for all 
+	- I may inclued here some request header assertions like consumerId is not null)
+	and make log.error to console Log Output with append save into .log file a new line 	
+20.now run test step for each valu in defined list of values (List<String> tollContractStatus) with sleep 
+	afther each run and cancelation of each run afther done for less memory usage
+21. if assertionStatus (detects if run is VALID/FAILED/UNKNOWN) on runned Test Step is FAILED def response and detect:
+	- if reponse contains html[@lang="en-US" (server/SEEBURGER error) log error into console Log Output and .log file 
+	- def sesion, token, header where if contains #status#=, def sessionidPair as header (need for search in header response)
+	- if header not contains 'HTTP/1.1 200 OK' or 'HTTP/1.1 202 Accepted' log error into console Log Output and .log file 
+	- if response not contains "returnCode": 0 log error into console Log Output and .log file 
+	- cancel test runner (as save to be sure if not still works session) for more memory
+22. if assertionStatus is UNKNOWN log error into console Log Output and .log file 
+23. if assertionStatus is VALID log info into console Log Output and save line with used value and OK into .log file 
+24. set property in Test case into normal value
 */
 import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
 import groovy.json.JsonSlurper
 import static com.jayway.jsonpath.JsonPath.parse
+import java.text.SimpleDateFormat
 
 // firsthly def ArrayList - enums
 // this enums is available for change if another enums will change, dont change another part of code
@@ -32,8 +47,20 @@ log.info "!!!!!!!Dont stop this Test Step!!!!!!!!!"
 log.info "!!!!!!!Dont change this Test Step when run!!!!!!!!!"
 log.info "!!!!!!!Wait for results at least 10 minutes!!!!!!!!!"
 
+def timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date())
+def date = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss_SSS").format(new Date())
+//log.info "timestamp is: " + timestamp
 //def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next one) 
 def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
+def scriptGroovy = context.testCase.getTestStepAt(context.currentStepIndex)
+def name = scriptGroovy.name + "_" + date + ".log"
+def ResFile = groovyUtils.projectPath + "..\\..\\..\\Logs\\" + name
+//log.info "path" + ResFile
+
+def ln = System.getProperty('line.separator')
+def j = new File(ResFile)
+	j.write(scriptGroovy.name + "$ln", "UTF-8")
+
 def testCase = testRunner.testCase;
 
 // here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
@@ -48,21 +75,30 @@ StepList = testCase.getTestStepList()
 							//set property tollContractStatus with value item into TestCase
 							testRunner.testCase.setPropertyValue("tollContractStatus", item)
    							//log.info testStep + ": " + item
-   						
+
+							def response = context.expand('${'+ testStep.name + '#ResponseAsXml}')
+							assert response != null : "ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + response
+							if(response == null){
+								log.error "ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + response
+								j.append("ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + response + "$ln", "UTF-8")
+							}
+							
 							//now run test step (will be run by count of enum values)
 							testRunner = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestCaseRunner(testCase, null);
 							testStepContext = new com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext(testStep);
 							testStep.run(testRunner, testStepContext);
 							sleep(new Random().nextInt(10) * 100);
 							testRunner.cancel( "Stop the testRunner" );
-							
+
 							if(it.metaClass.hasProperty(it,'assertionStatus')){
 								if(it.assertionStatus == AssertionStatus.FAILED){
-            							log.error "${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
-									def response = context.expand('${'+ testStep.name + '#Response}')
+            							log.error testStep.name + "_" + timestamp + " ${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
+            							j.append("ERROR_AssertionStatus.FAILED_" + testStep.name + "_" + timestamp + " ${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus") + "$ln", "UTF-8") 
+									
             							//log.info context.expand('${'+ testStep.name + '#Response}')
             							if (context.expand('${'+ testStep.name + '#ResponseAsXml//html[@lang="en-US"]}')){
-										log.error "HTML #status# is: " + header + " it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA!"				
+										log.error testStep.name + "_" + timestamp + "In RESPONSE IS html[@lang=\"en-US\"]. SEEBURGER or credentials BUG. Pleas Validate that ESB is functional. Pleas Make bug to JIRA! Response is: " + response													
+										j.append("ERROR_IS_html[@lang=\"en-US\"_" + testStep.name + "_" + timestamp + "In RESPONSE IS html[@lang=\"en-US\"]. SEEBURGER or credentials BUG. Pleas Validate that ESB is functional. Pleas Make bug to JIRA! Response is: " + response + "$ln","UTF-8")
 										}
 									def sessionidPair
 									def token1Pair
@@ -71,29 +107,31 @@ StepList = testCase.getTestStepList()
     											sessionidPair = it 
     										} 
 									}
-									if (header !=['HTTP/1.1 200 OK'] ) {
-										log.error "HTML #status# is NOT ['HTTP/1.1 200 OK'] it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA! Header is: " + header									
+									if (header !=['HTTP/1.1 200 OK'] || header != ['HTTP/1.1 202 Accepted'] ) {
+										log.error testStep.name + "_" + timestamp + " HTML #status# is NOT 'HTTP/1.1 200 OK' OR 'HTTP/1.1 202 Accepted' it MUST BE: 'HTTP/1.1 200' OK OR 'HTTP/1.1 202 Accepted'. Pleas Make bug to JIRA! Header is: " + header									
+										j.append("ERROR_NOT_['HTTP/1.1 202 Accepted']_OR_['HTTP/1.1 200 OK']_" + testStep.name + "_" + timestamp + " HTML #status# is NOT 'HTTP/1.1 200 OK' OR 'HTTP/1.1 202 Accepted' it MUST BE: 'HTTP/1.1 200' OK OR 'HTTP/1.1 202 Accepted'. Pleas Make bug to JIRA! Header is: " + header + "$ln", "UTF-8") 
 									}
 									
 									if (response !=['"returnCode": 0'] ){
-										log.error "\"returnCode\" is not 0: it MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA! ReturnCode is (look on response) : " + response		
+										log.error testStep.name + "_" + timestamp + "\"returnCode\" is not 0: IT MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA! ReturnCode is (look on response): " + response		
+										j.append("ERROR_\"returnCode\": 0_" + testStep.name + "_" + timestamp + "\"returnCode\" is not 0: IT MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA! ReturnCode is (look on response): " + response + "$ln", "UTF-8") 
 									}
             							testRunner.cancel( "Stop the testRunner" )
 								}
 							     else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            							log.error "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED). Pleas Make bug to JIRA! tollContractStatus is: " + testRunner.testCase.getPropertyValue("tollContractStatus") 
+            							log.error testStep.name + "_" + timestamp + " ${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED). Pleas Make bug to JIRA! tollContractStatus is: " + testRunner.testCase.getPropertyValue("tollContractStatus") 
+							     	j.append("ERROR_AssertionStatus.UNKNOWN_" + testStep.name + "_" + timestamp + " ${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED). Pleas Make bug to JIRA! tollContractStatus is: " + testRunner.testCase.getPropertyValue("tollContractStatus") + "$ln", "UTF-8") 
 							     }
 							     else if(it.assertionStatus == AssertionStatus.VALID){
-            							log.info "${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
+							     	//if needed i may inclued response by + response before + "$ln", or afther testRunner.testCase.getPropertyValue("tollContractStatus")
+            							log.info testStep.name + "_" + timestamp + "_${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
+							     	j.append("INFO_AssertionStatus.VALID_" + testStep.name + "_" + timestamp + "_${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus") + "$ln", "UTF-8") 
 							     }
 							}	
 						}
 					}
         			}
         		}
-
-    
-
-
+        		
 // now set property in Test case into normal value for active - 0
 testRunner.testCase.setPropertyValue("tollContractStatus", "0")
