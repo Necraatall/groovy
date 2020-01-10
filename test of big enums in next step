@@ -1,7 +1,8 @@
 /***********************enum test*************/
 /*
  * FOR USE in ANOTHER FLOW, PLEAS CHANGE THE NAME OF VARIABLE tollContractStatus AND in Loop (for (i = 1; i <4; i++)) 
- * value 4 into desired number of test steps runs (desired number of test steps under this one for run)
+ * value 4 into desired number of test steps runs +1 (desired number of test steps under this one for run) 
+ * and at the end of script at where we need desired step to go (We tested 3 under now, cause of it go to step 4 under this one)
 1. import AssertionStatus for detecting state of assertions
 2. import groovy.json.JsonSlurper for dealing with json (REST)
 3. import static com.jayway.jsonpath.JsonPath.parse for parsing responses due to HTTP statuses and ReturnCodes
@@ -16,9 +17,9 @@
 13.def step list - it get list of test steps
 14.run for loop in each Test step from list to get list of test steps
 15.run for loop for each in collection tollContractStatus 
-16.in loop run "current +1, current +2, current +3 Test Step (like MTD to ESB, to TLM, to TPL -3 request afther this in list of test steps)
+16.in loop run "current +1, current +2, current +3 Test Step (like MTD to ESB, to TLM, to TPL it is 3 request afther this in list of test steps)
 17.if the test steps match the required test step defined in testStep variable, run others
-18.def response for Test Step (testStep variable) name with value of Request
+18.def response and request for Test Step (testStep variable) name with value of Request and Response its for assertions and logs
 19.assert that runned request is not nul (place for better validation of request, but in this way is simple and usable for all 
 	- I may inclued here some request header assertions like consumerId is not null)
 	and make log.error to console Log Output with append save into .log file a new line 	
@@ -33,6 +34,7 @@
 22. if assertionStatus is UNKNOWN log error into console Log Output and .log file 
 23. if assertionStatus is VALID log info into console Log Output and save line with used value and OK into .log file 
 24. set property in Test case into normal value
+25. GO TO 4th Test spe Under this one
 */
 import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
 import groovy.json.JsonSlurper
@@ -76,11 +78,12 @@ StepList = testCase.getTestStepList()
 							testRunner.testCase.setPropertyValue("tollContractStatus", item)
    							//log.info testStep + ": " + item
 
+							def request = context.expand('${'+ testStep.name + '#Request}')
 							def response = context.expand('${'+ testStep.name + '#ResponseAsXml}')
-							assert response != null : "ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + response
+							assert request != null : "ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + request
 							if(response == null){
-								log.error "ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + response
-								j.append("ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + response + "$ln", "UTF-8")
+								log.error "ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + request
+								j.append("ERROR_REQUEST_IS_NULL_" + testStep.name + "_" + timestamp + "REQUEST IS EMPTY. Pleas validate the Request. If is not empty, Pleas Make bug to JIRA! Response is: " + request + "$ln", "UTF-8")
 							}
 							
 							//now run test step (will be run by count of enum values)
@@ -135,3 +138,10 @@ StepList = testCase.getTestStepList()
         		
 // now set property in Test case into normal value for active - 0
 testRunner.testCase.setPropertyValue("tollContractStatus", "0")
+
+// GO TO 4th Test spe Under this one
+String bezNaStepJmeno = testCase.getTestStepAt(context.currentStepIndex + 4).name
+//log.info "bezNaStepJmeno je " + bezNaStepJmeno
+crl = testRunner.testCase.getTestStepByName( bezNaStepJmeno ).getName()
+//log.info "crl " + crl
+testRunner.gotoStepByName(crl);
