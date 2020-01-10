@@ -1,6 +1,6 @@
 /***********************enum test*************/
 /*
- * FOR USE in ANOTHER FLOW, PLEAS CHANGE THE NAME OF VARIABLE country AND in Loop (for (i = 1; i <4; i++)) 
+ * FOR USE in ANOTHER FLOW, PLEAS CHANGE THE NAME OF VARIABLE tollContractStatus AND in Loop (for (i = 1; i <4; i++)) 
  * value 4 into desired number of test steps runs +1 (desired number of test steps under this one for run) 
  * and at the end of script at where we need desired step to go (We tested 3 under now, cause of it go to step 4 under this one)
 1. import AssertionStatus for detecting state of assertions
@@ -16,14 +16,14 @@
 12.def testCase as neme of this Test Case for saving the outputs 
 13.def step list - it get list of test steps
 14.run for loop in each Test step from list to get list of test steps
-15.run for loop for each in collection country 
+15.run for loop for each in collection tollContractStatus 
 16.in loop run "current +1, current +2, current +3 Test Step (like MTD to ESB, to TLM, to TPL it is 3 request afther this in list of test steps)
 17.if the test steps match the required test step defined in testStep variable, run others
 18.def response and request for Test Step (testStep variable) name with value of Request and Response its for assertions and logs
 19.assert that runned request is not nul (place for better validation of request, but in this way is simple and usable for all 
 	- I may inclued here some request header assertions like consumerId is not null)
 	and make log.error to console Log Output with append save into .log file a new line 	
-20.now run test step for each valu in defined list of values (List<String> country) with sleep 
+20.now run test step for each valu in defined list of values (List<String> tollContractStatus) with sleep 
 	afther each run and cancelation of each run afther done for less memory usage
 21. if assertionStatus (detects if run is VALID/FAILED/UNKNOWN) on runned Test Step is FAILED def response and detect:
 	- if reponse contains html[@lang="en-US" (server/SEEBURGER error) log error into console Log Output and .log file 
@@ -43,8 +43,7 @@ import java.text.SimpleDateFormat
 
 // firsthly def ArrayList - enums
 // this enums is available for change if another enums will change, dont change another part of code
-List<String> country = new ArrayList<String> (["MK", "AD"])
-//, "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "CH", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW"])
+List<String> tollContractStatus = new ArrayList<String> (["0", "1"])
 
 log.info "!!!!!!!Dont stop this Test Step!!!!!!!!!"
 log.info "!!!!!!!Dont change this Test Step when run!!!!!!!!!"
@@ -53,7 +52,7 @@ log.info "!!!!!!!Wait for results at least 10 minutes!!!!!!!!!"
 def timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date())
 def date = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss_SSS").format(new Date())
 //log.info "timestamp is: " + timestamp
-//def actual test Case and Test Step into MTD-ODS-ESB-country-all (next one) 
+//def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next one) 
 def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
 def scriptGroovy = context.testCase.getTestStepAt(context.currentStepIndex)
 def name = scriptGroovy.name + "_" + date + ".log"
@@ -69,14 +68,14 @@ def testCase = testRunner.testCase;
 // here we detect if test case were failed (when is not firsth if, then list all assertion test steps in test case, is usable as Tear Down Script too)
 StepList = testCase.getTestStepList()
 	StepList.each{
-				// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-country-all (next 1th test step)
-					for (String item : country) {
+				// now loop arrayList value by value it means item and run it in Test step MTD-ESB-TLM-tollContractStatus-all (next 1th test step)
+					for (String item : tollContractStatus) {
 						for (i = 1; i <4; i++) { 
-							//def actual test Case and Test Step into MTD-ODS-ESB-country-all (next 3rd one)
+							//def actual test Case and Test Step into MTD-ODS-ESB-tollContractStatus-all (next 3rd one)
 							testStep = testCase.getTestStepAt(context.currentStepIndex + i);
 							if(it==testStep){
-							//set property country with value item into TestCase
-							testRunner.testCase.setPropertyValue("country", item)
+							//set property tollContractStatus with value item into TestCase
+							testRunner.testCase.setPropertyValue("tollContractStatus", item)
    							//log.info testStep + ": " + item
 							
 							
@@ -98,13 +97,13 @@ StepList = testCase.getTestStepList()
 
 							if(it.metaClass.hasProperty(it,'assertionStatus')){
 								if(it.assertionStatus == AssertionStatus.FAILED){
-            							log.error prostredi + testStep.name + "_" + timestamp + " ${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("country")
-            							j.append(prostredi + " ERROR_AssertionStatus.FAILED_" + testStep.name + "_" + timestamp + " ${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("country") + "$ln", "UTF-8") 
+            							log.error prostredi + "_"  + testStep.name + "_" + timestamp + " ${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
+            							j.append(prostredi + "_ERROR_AssertionStatus.FAILED_" + testStep.name + "_" + timestamp + " ${it.name} FAIL with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus") + "$ln", "UTF-8") 
 									
             							//log.info context.expand('${'+ testStep.name + '#Response}')
             							if (context.expand('${'+ testStep.name + '#ResponseAsXml//html[@lang="en-US"]}')){
-										log.error prostredi + testStep.name + "_" + timestamp + "In RESPONSE IS html[@lang=\"en-US\"]. SEEBURGER or credentials BUG. Pleas Validate that ESB is functional. Pleas Make bug to JIRA! Response is: " + response													
-										j.append(prostredi + " ERROR_IS_html[@lang=\"en-US\"_" + testStep.name + "_" + timestamp + "In RESPONSE IS html[@lang=\"en-US\"]. SEEBURGER or credentials BUG. Pleas Validate that ESB is functional. Pleas Make bug to JIRA! Response is: " + response + "$ln","UTF-8")
+										log.error prostredi + "_" + testStep.name + "_" + timestamp + "In RESPONSE IS html[@lang=\"en-US\"]. SEEBURGER or credentials BUG. Pleas Validate that ESB is functional. Pleas Make bug to JIRA! Response is: " + response													
+										j.append(prostredi + "_ERROR_IS_html[@lang=\"en-US\"_" + testStep.name + "_" + timestamp + "In RESPONSE IS html[@lang=\"en-US\"]. SEEBURGER or credentials BUG. Pleas Validate that ESB is functional. Pleas Make bug to JIRA! Response is: " + response + "$ln","UTF-8")
 										}
 									def sessionidPair
 									def token1Pair
@@ -114,24 +113,24 @@ StepList = testCase.getTestStepList()
     										} 
 									}
 									if (header !=['HTTP/1.1 200 OK'] || header != ['HTTP/1.1 202 Accepted'] ) {
-										log.error prostredi + testStep.name + "_" + timestamp + " HTML #status# is NOT 'HTTP/1.1 200 OK' OR 'HTTP/1.1 202 Accepted' it MUST BE: 'HTTP/1.1 200' OK OR 'HTTP/1.1 202 Accepted'. Pleas Make bug to JIRA! Header is: " + header									
-										j.append(prostredi + " ERROR_NOT_['HTTP/1.1 202 Accepted']_OR_['HTTP/1.1 200 OK']_" + testStep.name + "_" + timestamp + " HTML #status# is NOT 'HTTP/1.1 200 OK' OR 'HTTP/1.1 202 Accepted' it MUST BE: 'HTTP/1.1 200' OK OR 'HTTP/1.1 202 Accepted'. Pleas Make bug to JIRA! Header is: " + header + "$ln", "UTF-8") 
+										log.error prostredi + "_"  + testStep.name + "_" + timestamp + " HTML #status# is NOT 'HTTP/1.1 200 OK' OR 'HTTP/1.1 202 Accepted' it MUST BE: 'HTTP/1.1 200' OK OR 'HTTP/1.1 202 Accepted'. Pleas Make bug to JIRA! Header is: " + header									
+										j.append(prostredi + "_ERROR_NOT_['HTTP/1.1 202 Accepted']_OR_['HTTP/1.1 200 OK']_" + testStep.name + "_" + timestamp + " HTML #status# is NOT 'HTTP/1.1 200 OK' OR 'HTTP/1.1 202 Accepted' it MUST BE: 'HTTP/1.1 200' OK OR 'HTTP/1.1 202 Accepted'. Pleas Make bug to JIRA! Header is: " + header + "$ln", "UTF-8") 
 									}
 									
 									if (response !=['"returnCode": 0'] ){
-										log.error prostredi + testStep.name + "_" + timestamp + "\"returnCode\" is not 0: IT MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA! ReturnCode is (look on response): " + response		
-										j.append(prostredi + " ERROR_\"returnCode\": 0_" + testStep.name + "_" + timestamp + "\"returnCode\" is not 0: IT MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA! ReturnCode is (look on response): " + response + "$ln", "UTF-8") 
+										log.error prostredi + "_"  + testStep.name + "_" + timestamp + "\"returnCode\" is not 0: IT MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA! ReturnCode is (look on response): " + response		
+										j.append(prostredi + "_ERROR_\"returnCode\": 0_" + testStep.name + "_" + timestamp + "\"returnCode\" is not 0: IT MUST BE: \"returnCode\": 0. Pleas Make bug to JIRA! ReturnCode is (look on response): " + response + "$ln", "UTF-8") 
 									}
             							testRunner.cancel( "Stop the testRunner" )
 								}
 							     else if(it.assertionStatus == AssertionStatus.UNKNOWN){
-            							log.error prostredi + testStep.name + "_" + timestamp + " ${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED). Pleas Make bug to JIRA! country is: " + testRunner.testCase.getPropertyValue("country") 
-							     	j.append(prostredi + " ERROR_AssertionStatus.UNKNOWN_" + testStep.name + "_" + timestamp + " ${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED). Pleas Make bug to JIRA! country is: " + testRunner.testCase.getPropertyValue("country") + "$ln", "UTF-8") 
+            							log.error prostredi + "_"  +testStep.name + "_" + timestamp + " ${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED). Pleas Make bug to JIRA! tollContractStatus is: " + testRunner.testCase.getPropertyValue("tollContractStatus") 
+							     	j.append(prostredi + " ERROR_AssertionStatus.UNKNOWN_" + testStep.name + "_" + timestamp + " ${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED). Pleas Make bug to JIRA! tollContractStatus is: " + testRunner.testCase.getPropertyValue("tollContractStatus") + "$ln", "UTF-8") 
 							     }
 							     else if(it.assertionStatus == AssertionStatus.VALID){
-							     	//if needed i may inclued response by + response before + "$ln", or afther testRunner.testCase.getPropertyValue("country")
-            							log.info prostredi + testStep.name + "_" + timestamp + "_${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("country")
-							     	j.append(prostredi + " INFO_AssertionStatus.VALID_" + testStep.name + "_" + timestamp + "_${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("country") + "$ln", "UTF-8") 
+							     	//if needed i may inclued response by + response before + "$ln", or afther testRunner.testCase.getPropertyValue("tollContractStatus")
+            							log.info prostredi + "_"  + testStep.name + "_" + timestamp + "_${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus")
+							     	j.append(prostredi + "_INFO_AssertionStatus.VALID_" + testStep.name + "_" + timestamp + "_${it.name} OK! with value of: " + testRunner.testCase.getPropertyValue("tollContractStatus") + "$ln", "UTF-8") 
 							     }
 							}	
 						}
@@ -139,8 +138,8 @@ StepList = testCase.getTestStepList()
         			}
         		}
         		
-// now set property in Test case into normal value for Hungary "HU"
-testRunner.testCase.setPropertyValue("country", "HU")
+// now set property in Test case into normal value for active - 0
+testRunner.testCase.setPropertyValue("tollContractStatus", "0")
 
 // GO TO 4th Test spe Under this one
 String bezNaStepJmeno = testCase.getTestStepAt(context.currentStepIndex + 4).name
@@ -148,6 +147,4 @@ String bezNaStepJmeno = testCase.getTestStepAt(context.currentStepIndex + 4).nam
 crl = testRunner.testCase.getTestStepByName( bezNaStepJmeno ).getName()
 //log.info "crl " + crl
 testRunner.gotoStepByName(crl);
-
-
 
