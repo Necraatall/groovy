@@ -1,0 +1,2 @@
+def response = context.testCase.testSteps["Masterdata4-ESB-TLM-Activation"].properties
+log.info (response["Response"].value)
