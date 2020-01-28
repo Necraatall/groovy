@@ -1,2 +1,10 @@
 def response = context.testCase.testSteps["Masterdata4-ESB-TLM-Activation"].properties
 log.info (response["Response"].value)
+
+
+testRunner.getResults().getRequestContent()
+testRunner.getResults().getResponseContent()
+
+
+i is an integer, that may be obtained by:
+i = testRunner.testCase.getTestStepIndexByName("My Test Step")
