@@ -1,0 +1,2 @@
+SELECT sloupec, COUNT(sloupec) AS pocet_vyskytu FROM tabulka GROUP BY sloupec HAVING pocet_vyskytu > 1
+Zdroj: https://it-slovnik.cz/navody/jak-vyhledat-duplicty-v-mysql/?utm_source=cp&utm_medium=link&utm_campaign=cp
