@@ -1,1 +1,12 @@
 https://www.youtube.com/watch?v=a3mbDtyH2BU
+
+
+//in Xpath Match assertion you may assert more results
+// get the xml response
+def response = messageExchange.getResponseContent() 
+// parse it
+def xml = new XmlSlurper().parseText(response)
+// find your node by name
+def node = xml.'**'.find { it.name() == 'total-premium' }
+// assert against the possible values
+assert ['7.362*','6.994*','7.730*'].contains(node.toString())
