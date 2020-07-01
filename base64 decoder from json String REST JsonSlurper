@@ -1,0 +1,40 @@
+/*
+ * simple base64 decoder
+ * get the the firsth previous step
+ * use function for decoding
+ * save it to TestCase TEST property
+ */
+import groovy.json.JsonSlurper
+
+/**
+ * Convert b64 to ASCII
+ * @param b64 base64 encoded string
+ * @return decoded string
+ */
+String GetASCIIFromB64(String b64){
+    byte[] decoded = b64.decodeBase64()
+    String sFormatted = new String(decoded)
+    return sFormatted
+}
+
+def testCase = testRunner.testCase;
+testStep = testCase.getTestStepAt(context.currentStepIndex - 1).getName();
+log.info "Name of test Step   :" + testStep
+//def response = context.expand('${'+ testStep + '#ResponseAsXml}')
+//log.info "RESPONSE !!!!!!!!!!! :" + response.toString()
+
+
+responseContent = testRunner.testCase.getTestStepByName(testStep.toString()).getPropertyValue("response")
+slurperresponse = new JsonSlurper().parseText(responseContent)
+log.info "XML   :" + (slurperresponse.request.requestBody.xml.xmlString)
+
+String b64 = (slurperresponse.request.requestBody.xml.xmlString)
+//log.info "b64   :" + b64
+
+// test
+String decoded = GetASCIIFromB64(b64)
+log.info "DECODED     :" + (decoded)
+//log.info "DECODED     :" +(GetASCIIFromB64(b64))
+
+testRunner.testCase.setPropertyValue("TEST", decoded)
+log.info ("TestCase Property = " + testRunner.testCase.getPropertyValue("TEST"))
