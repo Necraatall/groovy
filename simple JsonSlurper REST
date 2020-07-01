@@ -1,0 +1,5 @@
+import groovy.json.JsonSlurper
+
+responseContent = testRunner.testCase.getTestStepByName("xxx").getPropertyValue("response")
+slurperresponse = new JsonSlurper().parseText(responseContent)
+log.info (slurperresponse.activation.customer)
