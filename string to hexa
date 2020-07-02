@@ -1,0 +1,5 @@
+String toHexString(String input) {
+    return String.format("%x", new BigInteger(1, input.getBytes()));
+}
+String hex = toHexString('\u000E6RFT380')
+print(hex)
