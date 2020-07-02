@@ -1,0 +1,25 @@
+/*
+ * vemu dnesni datum a porovnam s datumem z dbValue
+ *
+*/
+import java.text.SimpleDateFormat
+boolean IsDateOK(String formatedString)
+{
+    String pattern = "yyyyMMddHHmmssSSS'Z'";
+    if (formatedString.contains('.'))
+        pattern = "yyyyMMddHHmmss.SSS'Z'";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    Date parsedDate = simpleDateFormat.parse(formatedString);
+    Date now =  new Date()
+    log.info('input time' + parsedDate)
+    log.info('actual time' + now)
+    if ( parsedDate <= now)
+        log.info ('lower or same')
+        return true
+    log.info('higher')
+    return false
+}
+dbValue=context.expand( '${prepare_XMLString2#Response#//exceptionValidityStart}' )
+log.info context.expand( '${prepare_XMLString2#Response#//exceptionValidityStart}' )
+
+IsDateOK(dbValue)
