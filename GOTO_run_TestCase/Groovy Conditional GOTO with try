@@ -1,0 +1,22 @@
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+
+def sessionidPair
+def token1Pair
+def header = testRunner.testCase.getTestStepByName("Masterdata2_REST-ESB-TPL-Activation").testRequest.response.responseHeaders["#status#"].each { 
+    if (it.contains("#status#=")) {
+    	sessionidPair = it 
+    } 
+}
+log.info header
+
+try {
+
+	if (header !=['HTTP/1.1 202 Accepted'] ) {
+		log.error "HTML #status# is: " + header + " it MUST BE: HTTP/1.1 200 OK. Pleas Make bug to JIRA!"
+		testRunner.gotoStepByName("clean all") 
+		}
+}
+ catch(Exception e) {
+    println("Exception: ${e}")
+}
