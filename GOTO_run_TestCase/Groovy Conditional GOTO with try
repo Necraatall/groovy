@@ -20,3 +20,24 @@ try {
  catch(Exception e) {
     println("Exception: ${e}")
 }
+
+/*
+* ANOTHER, SHORT WAY ON DATABASE
+*/
+import static com.jayway.jsonpath.JsonPath.parse
+def result = context.expand('${ObeStatusChange2_OK#ResponseAsXml#//ISPROCESSED[1]}')
+def result2 = context.expand('${ObeStatusChange2_OK#ResponseAsXml#//MESSAGEHEADERID[1]}')
+def result3 = context.expand('${ObeStatusChange2_OK#ResponseAsXml#//STATUSINFO[1]}')
+def going = 0
+log.info "result is: " + result.toString()
+log.info "result2 is: " + result2.toString()
+log.info "result3 is: " + result3.toString()
+
+if (result2 == "") {testRunner.gotoStepByName("ObeStatusChange2_OK"); going = 1}	
+
+if (going == 0){if (result != "1") {testRunner.gotoStepByName("ObeStatusChange2_OK"); going = 1}}
+
+if (going == 0){if (result3 != "<STATUSINFO/>") {testRunner.gotoStepByName("ObeStatusChange2_OK"); going = 1}}
+		
+
+
