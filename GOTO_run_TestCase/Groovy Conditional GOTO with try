@@ -22,6 +22,33 @@ try {
 }
 
 /*
+*
+*/
+import static com.jayway.jsonpath.JsonPath.parse
+
+// urcuje se kterym stepem pred timto chceme pracovat
+def previousTestStep = context.testCase.getTestStepAt(context.currentStepIndex - 1)
+/* 
+ *  pokud chcete i previous response tak '${' + previousTestStep.name + '#Request}' 
+*       zmenit za ResponseAsXml pokud v Xpath Response v JsonPath
+ */
+//log.info previousTestStep.name
+def response = context.expand( '${' + previousTestStep.name + '#Response}' )
+def request = context.expand( '${' + previousTestStep.name + '#Request}' )
+
+def returnCode = parse(response).read('$.response.responseBody.returnCode')
+log.info returnCode
+
+//save req for incommingMessage sql search
+//TestSuite
+//request = request.replaceAll(" ","")
+log.info ("Project Property request.trim = " + request)
+testRunner.testCase.testSuite.setPropertyValue("IncommingMessage", request)
+//log.info ("Project Property = " + testRunner.testCase.testSuite.getPropertyValue("IncommingMessage"))
+
+if (returnCode!=0) testRunner.gotoStepByName("ObeStatus_sent_NOK")
+
+/*
 * ANOTHER, SHORT WAY ON DATABASE
 */
 import static com.jayway.jsonpath.JsonPath.parse
