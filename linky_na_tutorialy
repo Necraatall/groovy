@@ -1,0 +1,87 @@
+Free Tutorials - https://automationstepbystep.com/​
+Get the groovy script from here - https://bit.ly/2JtcpNT​
+Step 1: In the existing SoapUI project, create a new Test Suite with the name: Library
+Step 2: Disable the Library test suite to avoid its execution along with the project
+Step 3: Create a new test case with the name: Reporting_Utility inside the test suite
+Step 4: Add Groovy Script Step with the name: GenerateCSVReport in the test case
+References: https://dzone.com/articles/how-to-ach...​
+Step 5: Open the “TearDown Script” section for each test case from the test case window
+Step 6: In the opened “TearDown Script” section, add code to call GenerateCSVReport
+Step 7: Execute the SoapUI Project/Test Suite/Test Case
+
+GitHub - https://github.com/Raghav-Pal/​
+Udemy - https://www.udemy.com/user/raghav-pal-3/​
+Training by Raghav at your venue - raghav.qna@gmail.com
+Training schedule - https://automationstepbystep.com/trai...​
+------------ UI TESTING ------------
+Selenium Beginners - https://bit.ly/2MGRS8K​
+Selenium Java Framework from Scratch - https://bit.ly/2N9xvR6​
+Selenium Python - https://bit.ly/2oyMp5x​
+Selenium Tips - https://bit.ly/2owxc50​
+Selenium Builder - https://bit.ly/2MKNtlq​
+Katalon Studio - https://bit.ly/2wARFdi​
+Robot Framework with RIDE- https://bit.ly/2Px6Ue9​
+Robot Framework with Eclipse - http://bit.ly/2N8DZxb​
+Protractor - http://bit.ly/2KtqVkU​
+
+------------ API TESTING ------------
+Web Services (API) - https://bit.ly/2MGafL7​
+SoapUI - https://bit.ly/2MGahmd​
+Postman - https://bit.ly/2wz8LrW​
+General - https://bit.ly/2PYdwmV​
+Katalon Studio API Testing - https://bit.ly/2BwuCTN​
+
+------------ MOBILE TESTING ------------
+Appium - https://bit.ly/2ZHFSGX​
+Mobile Playlist - https://bit.ly/2PxpeUv​
+
+------------ CI | CD | DEVOPS ------------
+Jenkins Beginner - https://bit.ly/2MIn8EC​
+Jenkins Tips & Trick - https://bit.ly/2LRt6xC​
+Docker - https://bit.ly/2MInnzx​
+
+------------ VERSION CONTROL SYSTEM ------------
+Git & GitHub - https://bit.ly/2Q1pagY​
+
+------------ PERFORMANCE TESTING ------------
+JMeter Beginner - https://bit.ly/2oBbtIU​
+JMeter Intermediate - https://bit.ly/2oziNVB​
+JMeter Advanced - https://bit.ly/2Q22Y6a​
+JMeter Tips & Tricks - https://bit.ly/2NOfWD2​
+Performance Testing - https://bit.ly/2wEXbLS​
+
+------------ PROGRAMMING ------------
+Java Beginners - https://bit.ly/2PVUcXs​
+Java Tips & Tricks - https://bit.ly/2CdcDnJ​
+GROOVY - https://bit.ly/2FvWV5C​
+JAVASCRIPT - http://bit.ly/2KJDZ8o​
+
+------------ IDE ------------
+Visual Studio Code - https://bit.ly/2V15yvt​
+
+------------ MAVEN ------------
+Maven - https://bit.ly/2NJdDRS​
+
+------------ OTHERS ------------
+Redis- https://bit.ly/2N9jyCG​
+Misc - https://bit.ly/2Q2q5xQ​
+Tools & Tips - https://bit.ly/2oBfwoR​
+QnA Friday- https://bit.ly/2NgwGpw​
+Sunday Special - https://bit.ly/2wB23BO​
+
+Ask Raghav - https://bit.ly/2CoJGWf​
+Interviews - https://bit.ly/2NIPPxk​
+All Playlists - https://bit.ly/2LSiezA​
+
+Keep Learning,
+Raghav
+
+Website - https://automationstepbystep.com/​
+LifeCharger - http://lifecharger.org/​
+Udemy Courses - https://www.udemy.com/user/raghav-pal-3/​
+Facebook - https://www.facebook.com/automationst...​
+Twitter - https://twitter.com/automationsbs​
+Youtube - http://youtube.com/automationstepbystep​
+Instagram - https://www.instagram.com/automations...​
+
+You can support my mission for education by sharing this knowledge and helping as many people as you can
